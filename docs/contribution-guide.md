@@ -1,123 +1,143 @@
 # Contribution Guide
 
-## 1. Project Overview
+## 1. Purpose
 
-This repository is the shared workspace for the **RAG Knowledge Representation & Retrieval Playground**.
+This guide explains how team members should contribute to the **RAG Knowledge Representation & Retrieval Playground**.
 
-The goal is to study how different ways of representing knowledge and different retrieval techniques affect the evidence retrieved by a RAG system.
+The project is intentionally divided into independent modules so that multiple people can work in parallel without breaking the shared architecture.
 
-All team members work from the same source dataset and follow the same integration contracts so that the final implementations can be compared fairly.
+The basic workflow is:
+
+```text
+Research
+   ↓
+Design
+   ↓
+Implement
+   ↓
+Test
+   ↓
+Experiment
+   ↓
+Document
+   ↓
+Pull Request
+   ↓
+Review
+   ↓
+Merge
+```
 
 ---
 
-## 2. Repository Structure
+# 2. Before You Start
+
+Every team member should understand these project principles before writing code.
+
+### Same Source
+
+All teams use the same NovaMart source dataset.
+
+### Same Benchmark
+
+All teams use the same 40 evaluation questions and ground truth.
+
+### Same Evidence Contract
+
+All retrieval implementations return the common `Evidence` format.
+
+### No Hardcoded Answers
+
+The implementation must retrieve information from the representation rather than returning benchmark answers directly.
+
+### Compare, Don't Assume
+
+The purpose is to understand the strengths and weaknesses of different approaches, not to prove that one technique is always better.
+
+---
+
+# 3. Repository Structure
 
 ```text
 rag-knowledge-representation-playground/
 │
 ├── data/
-│   ├── source/          # Original NovaMart source document
-│   ├── normalized/     # Normalized source data
-│   └── queries/        # Evaluation questions, ground truth and rubric
-│
-├── shared/              # Common interfaces and schemas
-│
-├── representations/     # Knowledge representation implementations
-│   ├── text/
-│   ├── text_metadata/
-│   ├── structured/
-│   └── graph/
-│
-├── retrieval/           # Retrieval implementations
-│
-├── evaluation/          # Common evaluation framework and results
-│
-├── app/                 # Integrated demo application
-│
-└── docs/                # Project and team documentation
+├── shared/
+├── representations/
+├── retrieval/
+├── evaluation/
+├── app/
+└── docs/
 ```
 
-### Important principle
+### `data/`
 
-The repository structure defines **boundaries**, not exact implementation details.
+Common source data, normalized data, evaluation questions, ground truth, and benchmark information.
 
-Team members are expected to research, design, implement and test their own solutions within their assigned area.
+### `shared/`
+
+Common interfaces, schemas, configuration, and registries.
+
+### `representations/`
+
+Implementation of the four knowledge representation approaches.
+
+### `retrieval/`
+
+Retrieval strategy implementations.
+
+### `evaluation/`
+
+Metrics, evaluation logic, and experiment results.
+
+### `app/`
+
+Final integrated application.
+
+### `docs/`
+
+Project architecture, contribution rules, and team assignments.
 
 ---
 
-## 3. Clone the Repository
+# 4. Team Ownership
 
-Do not download the repository as a ZIP for normal development.
-
-Clone it using Git:
-
-```bash
-git clone <REPOSITORY_URL>
-cd rag-knowledge-representation-playground
-```
-
-Each team member should have their own local clone on their computer.
-
-The local repository is connected to the shared GitHub repository.
-
----
-
-## 4. Create Your Own Branch
-
-Do not directly develop on `main`.
-
-Create a branch for your assigned work.
-
-Example:
-
-```bash
-git checkout -b feature/text-representation
-```
-
-Recommended branch names:
+Each pair owns its assigned representation module.
 
 ```text
-feature/text-representation
-feature/text-metadata
-feature/structured-representation
-feature/knowledge-graph
-feature/keyword-retrieval
-feature/vector-retrieval
-feature/hybrid-retrieval
-feature/reranking
+Pair 1 → representations/text/
+Pair 2 → representations/text_metadata/
+Pair 3 → representations/structured_table/
+Pair 4 → representations/knowledge_graph/
 ```
 
-Use a branch that clearly describes the work you are doing.
+Teams are responsible for:
+
+* Research
+* Technical design
+* Implementation
+* Unit tests
+* Experiments
+* Failure analysis
+* Documentation
+
+The project lead owns the integration and shared areas.
 
 ---
 
-## 5. What You Are Allowed to Modify
+# 5. Shared Areas
 
-You may freely modify:
-
-* Your assigned representation implementation
-* Your assigned retrieval implementation
-* Tests related to your implementation
-* Documentation related to your implementation
-* Experimental configuration and results related to your work
-
-You may create additional files inside your assigned area when they are useful.
-
-You are responsible for keeping your implementation understandable, tested and documented.
-
----
-
-## 6. Files and Areas That Require Coordination
-
-Do not independently change the following:
+The following areas are shared project infrastructure:
 
 ```text
-data/
 shared/
+data/
 evaluation/
 app/
 docs/architecture.md
 ```
+
+Do not modify these areas casually.
 
 In particular, do not change:
 
@@ -126,215 +146,539 @@ shared/interfaces.py
 shared/schemas.py
 ```
 
-without discussing the change with the project lead.
+without coordinating with the project lead.
 
-These files define the common contract used to integrate all team implementations.
-
-If you believe the shared contract needs improvement, raise the issue with the project lead before modifying it.
+These files define contracts used by multiple parts of the project.
 
 ---
 
-## 7. Common Evidence Contract
+# 6. Dataset Rules
 
-All retrieval implementations must eventually return evidence using the shared `Evidence` schema.
+The common dataset is part of the project's experimental control.
 
-Conceptually:
+Teams must not:
+
+* Modify the source handbook
+* Change the normalized dataset
+* Add private benchmark questions
+* Remove evaluation questions
+* Modify ground truth to improve results
+* Create a separate competing dataset
+
+If a genuine data issue is discovered, report it to the project lead.
+
+The benchmark currently contains:
 
 ```text
-Evidence
-├── content
-├── source_id
-├── score
-└── metadata
+40 evaluation questions
+40 ground-truth entries
 ```
 
-The internal implementation is your choice.
-
-For example, you may use:
-
-* BM25
-* vector search
-* SQL
-* graph traversal
-* hybrid retrieval
-* reranking
-* other appropriate techniques
-
-However, the output must remain compatible with the project's common interface.
+All teams should evaluate against the same benchmark.
 
 ---
 
-## 8. Use the Common Dataset
+# 7. Git Workflow
 
-All teams must use the provided NovaMart dataset.
+Do not work directly on `main`.
 
-Do not:
+Each pair should create a feature branch.
 
-* Replace the dataset
-* Create a different benchmark
-* Modify the source document
-* Invent policy information
-* Hardcode answers to evaluation questions
+Examples:
 
-The purpose of the project is to compare different approaches using the **same knowledge source and benchmark**.
+```text
+feature/text-representation
+feature/text-metadata
+feature/structured
+feature/knowledge-graph
+```
 
----
-
-## 9. Research Before Implementation
-
-Do not simply implement the first approach that comes to mind.
-
-For your assigned area:
-
-1. Understand the representation/retrieval technique.
-2. Research relevant implementation approaches.
-3. Identify important design decisions.
-4. Implement the approach.
-5. Test it.
-6. Evaluate it.
-7. Document what worked and what failed.
-
-Your README should explain important design decisions and their reasoning.
-
----
-
-## 10. Testing
-
-Every implementation should include appropriate tests.
-
-At minimum, test:
-
-* Basic functionality
-* Expected retrieval behaviour
-* Empty/invalid inputs where relevant
-* Metadata or filters where applicable
-* Source traceability
-* Integration with the common interface
-
-Run the project tests before submitting your work.
+Create a branch:
 
 ```bash
-pytest
+git checkout -b feature/<your-feature>
 ```
 
----
-
-## 11. Commit Your Work
-
-Make focused commits instead of one huge commit.
-
-Example:
+Check the current branch:
 
 ```bash
-git add representations/text/
-git commit -m "Implement text chunking"
+git branch
 ```
 
-Another example:
-
-```bash
-git add representations/text/tests/
-git commit -m "Add text representation tests"
-```
-
-Commit messages should describe what changed.
+The active branch should be your feature branch.
 
 ---
 
-## 12. Push Your Branch
+# 8. Before Starting Work
 
-Push your branch to GitHub:
-
-```bash
-git push -u origin feature/text-representation
-```
-
-Your branch will then appear in the shared GitHub repository.
-
----
-
-## 13. Create a Pull Request
-
-After completing your work:
-
-1. Push your branch.
-2. Open GitHub.
-3. Create a Pull Request from your branch into `main`.
-4. Explain what you implemented.
-5. Mention tests performed.
-6. Mention important design decisions.
-7. Mention known limitations.
-
-Do not merge your own Pull Request unless the project lead has explicitly agreed.
-
-The project lead will review the implementation before it becomes part of `main`.
-
----
-
-## 14. Keeping Your Branch Updated
-
-Before starting new work, update your local `main`:
+Always synchronize with `main` before starting new work.
 
 ```bash
 git checkout main
 git pull origin main
 ```
 
-Then update your feature branch from the latest `main` as appropriate.
+Then create or update your feature branch.
 
-If you are unsure how to resolve a merge conflict, do not randomly overwrite files. Ask the project lead.
+If your feature branch already exists:
 
----
+```bash
+git checkout feature/<your-feature>
+git merge main
+```
 
-## 15. Pull Request Checklist
-
-Before requesting review, confirm:
-
-* [ ] Implementation works
-* [ ] Tests pass
-* [ ] No hardcoded answers
-* [ ] No changes to the source dataset
-* [ ] Common interfaces are respected
-* [ ] Evidence contains source traceability
-* [ ] README/documentation is updated
-* [ ] Experimental results are included where applicable
-* [ ] No unnecessary dependencies were added
-* [ ] No unrelated files were modified
-* [ ] Code is reasonably clean and understandable
+Resolve conflicts carefully if they occur.
 
 ---
 
-## 16. Core Team Rule
+# 9. Development Workflow
 
-The project has one shared goal:
+## Step 1 — Research
 
-> **Different implementations, common contract, common benchmark, fair comparison.**
+Understand the technique before implementing it.
 
-You are encouraged to experiment inside your assigned area.
+Research questions should include:
 
-At the same time, changes that affect the shared architecture must be coordinated so that individual experiments do not break the integrated project.
+* What problem does this technique solve?
+* How does it represent knowledge?
+* How does retrieval work?
+* What assumptions does it make?
+* What are its strengths?
+* What are its weaknesses?
+* What types of queries should it handle well?
+* What types of queries might cause failure?
 
 ---
 
-## 17. Ownership
+## Step 2 — Design
 
-The project lead is responsible for:
+Before coding, decide:
 
-* Overall architecture
-* Shared interfaces
-* Integration
-* Evaluation framework
-* Demo application
-* Final repository structure
-* Reviewing Pull Requests
+* Input format
+* Internal representation
+* Storage/index
+* Retrieval method
+* Metadata requirements
+* Output format
+* Testing approach
+* Experiment design
 
-Each pair is responsible for:
+The design should remain compatible with the project's shared interfaces.
 
-* Research
-* Implementation
-* Testing
-* Experiments
-* Documentation
-* Findings for their assigned area
+---
 
-The final application will integrate the independently developed components into one common playground.
+## Step 3 — Implement
+
+Implement only within your assigned module unless a shared change has been discussed.
+
+Keep implementation modular.
+
+Avoid hardcoding answers for evaluation questions.
+
+---
+
+## Step 4 — Test
+
+Every implementation should include meaningful tests.
+
+Tests should verify things such as:
+
+* Data loading
+* Representation creation
+* Retrieval behavior
+* Evidence format
+* Source traceability
+* Edge cases
+* Failure cases
+
+Run:
+
+```bash
+python -m pytest
+```
+
+before creating a Pull Request.
+
+---
+
+# 10. Evidence Contract
+
+Retrievers must return:
+
+```python
+@dataclass
+class Evidence:
+    content: str
+    source_id: str
+    score: float
+    metadata: dict[str, Any]
+```
+
+### `content`
+
+Retrieved information.
+
+### `source_id`
+
+Identifier that allows the evidence to be traced back to the source.
+
+### `score`
+
+Retrieval relevance score when available.
+
+### `metadata`
+
+Additional information useful for tracing or analysis.
+
+The common format allows different implementations to be evaluated using the same evaluation layer.
+
+---
+
+# 11. Retrieval Interface
+
+Retrievers should follow:
+
+```python
+class Retriever(ABC):
+
+    @abstractmethod
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = 5,
+        filters: dict | None = None,
+    ) -> list[Evidence]:
+        pass
+```
+
+Teams should not create incompatible retrieval APIs for individual modules.
+
+If the interface is insufficient for a legitimate use case, discuss the requirement before changing the shared interface.
+
+---
+
+# 12. Experiments
+
+Experiments should use the common benchmark.
+
+Teams should record:
+
+* Configuration
+* Retrieval method
+* Top-K
+* Relevant source IDs
+* Retrieved source IDs
+* Retrieval latency
+* Relevant metrics
+* Failure cases
+* Observations
+
+The objective is to understand **why** a method succeeds or fails.
+
+Do not report only a single aggregate score.
+
+---
+
+# 13. Failure Analysis
+
+Teams should identify representative failure cases.
+
+Examples:
+
+```text
+Wrong policy version
+Wrong region
+Wrong customer tier
+Near-match entity
+Missed exception
+Incomplete multi-hop relationship
+Irrelevant evidence
+Insufficient evidence
+```
+
+For each important failure, explain:
+
+```text
+Query
+↓
+Expected evidence
+↓
+Retrieved evidence
+↓
+What went wrong?
+↓
+Why did the approach behave this way?
+```
+
+---
+
+# 14. Documentation Requirements
+
+Each representation module should contain a README.
+
+A team README should explain:
+
+### 1. Approach
+
+What representation or retrieval technique was implemented?
+
+### 2. Design
+
+How is the knowledge represented and stored?
+
+### 3. Retrieval
+
+How is relevant evidence retrieved?
+
+### 4. Integration
+
+How does the module use the common interfaces?
+
+### 5. Experiments
+
+What experiments were performed?
+
+### 6. Results
+
+What was observed?
+
+### 7. Failure Cases
+
+Where did the approach struggle?
+
+### 8. Limitations
+
+What are the known limitations?
+
+---
+
+# 15. Code Quality
+
+Keep code:
+
+* Modular
+* Readable
+* Testable
+* Documented where necessary
+* Consistent with the project's interfaces
+
+Avoid:
+
+* Hardcoded benchmark answers
+* Duplicated datasets
+* Unnecessary dependencies
+* Representation-specific logic in shared code
+* Unexplained magic values
+* Large monolithic files
+
+---
+
+# 16. Dependencies
+
+Before adding a new dependency, check whether it is genuinely required.
+
+Do not introduce libraries simply because they are popular.
+
+If a new dependency is necessary:
+
+1. Explain why it is needed.
+2. Add it to `requirements.txt`.
+3. Ensure the project still installs correctly.
+4. Inform the project lead.
+
+---
+
+# 17. Commits
+
+Keep commits focused.
+
+Good:
+
+```bash
+git commit -m "Implement text chunking"
+```
+
+```bash
+git commit -m "Add text retrieval tests"
+```
+
+```bash
+git commit -m "Document chunking experiments"
+```
+
+Avoid vague commits such as:
+
+```text
+update
+changes
+final
+test
+stuff
+```
+
+---
+
+# 18. Push Your Branch
+
+After committing:
+
+```bash
+git push -u origin feature/<your-feature>
+```
+
+For later pushes:
+
+```bash
+git push
+```
+
+---
+
+# 19. Pull Request
+
+Create a Pull Request from:
+
+```text
+feature/<your-feature>
+```
+
+into:
+
+```text
+main
+```
+
+The Pull Request should explain:
+
+* What was implemented
+* Why the design was chosen
+* What was tested
+* What experiments were performed
+* What was learned
+* Known limitations
+
+---
+
+# 20. Pull Request Checklist
+
+Before requesting review:
+
+```text
+[ ] Correct feature branch used
+[ ] No changes to shared data
+[ ] No hardcoded benchmark answers
+[ ] Common interfaces followed
+[ ] Evidence objects contain source IDs
+[ ] Tests added
+[ ] Tests pass
+[ ] Experiments documented
+[ ] Failure cases documented
+[ ] README updated
+[ ] No unnecessary dependencies
+[ ] Code is limited to the assigned area
+```
+
+---
+
+# 21. Keeping Your Branch Updated
+
+The `main` branch may receive changes from other teams.
+
+Before continuing significant work:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+Then update your feature branch:
+
+```bash
+git checkout feature/<your-feature>
+git merge main
+```
+
+Resolve conflicts carefully.
+
+Do not overwrite another team's work.
+
+---
+
+# 22. What Requires Project Lead Approval?
+
+Coordinate before changing:
+
+```text
+shared/interfaces.py
+shared/schemas.py
+shared/config.py
+shared/registry.py
+data/
+evaluation/
+app/
+docs/architecture.md
+```
+
+A shared change can affect multiple teams, so it should be discussed before implementation.
+
+---
+
+# 23. Definition of Done
+
+A team contribution is considered complete when:
+
+```text
+Research
+   ↓
+Design
+   ↓
+Implementation
+   ↓
+Tests
+   ↓
+Experiments
+   ↓
+Failure Analysis
+   ↓
+Documentation
+   ↓
+Pull Request
+   ↓
+Review
+   ↓
+Integration
+```
+
+The code working locally is **not the only definition of done**.
+
+The team should also be able to explain:
+
+> What did we build?
+
+> Why did we design it this way?
+
+> What evidence does it retrieve?
+
+> What queries does it handle well?
+
+> Where does it fail?
+
+> What did we learn?
+
+---
+
+# 24. Final Principle
+
+This project is a learning and comparison environment.
+
+The goal is not:
+
+> "Our technique is the best."
+
+The goal is:
+
+> **"We understand how this technique represents knowledge, how it retrieves evidence, what kinds of questions it handles well, where it fails, and why."**
+
+A successful contribution is therefore one that produces both:
+
+**working implementation + meaningful understanding.**
