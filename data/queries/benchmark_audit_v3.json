@@ -1,0 +1,41 @@
+{
+  "version": "3.0",
+  "status": "ready_for_freeze_after_review",
+  "summary": {
+    "questions_reviewed": 40,
+    "blocking_issues_found": 6,
+    "fixed_in_v3": 6,
+    "source_id_integrity": "pass"
+  },
+  "blocking_fixes": [
+    {
+      "issue": "POL-901 fixed Premium India refund window at 60 days, conflicting with July-Dec global V3 and Q033/Q034.",
+      "fix": "India now follows the active global refund version unless a more specific India, campaign, or legal rule applies."
+    },
+    {
+      "issue": "POL-1001 + POL-901 made Q005's 15-day campaign answer logically inconsistent with regional precedence.",
+      "fix": "Removed the fixed India 60-day regional value; the Q2 campaign can now apply without a regional numeric conflict."
+    },
+    {
+      "issue": "Q034 had a non-deterministic answer ('active policy must be checked').",
+      "fix": "It now expects 75 days because the Q2 campaign expired on 30 June 2026 and the July-Dec global Premium version is active in August."
+    },
+    {
+      "issue": "Q029 referenced missing POL-038.",
+      "fix": "Uses REF-ENTITY-MODEL, POL-1006, and POL-1001."
+    },
+    {
+      "issue": "Q031/Q038 referenced synthetic POL-1101/POL-1102 not present in the handbook.",
+      "fix": "Added stable handbook reference sections REF-GRAPH-001 and REF-ENTITY-MODEL."
+    },
+    {
+      "issue": "Q018/Q019/Q020/Q039 cited POL-301 even though the manufacturer/product values live in catalog tables.",
+      "fix": "Added stable row-level product/manufacturer source IDs and updated ground truth."
+    }
+  ],
+  "non_blocking_observations": [
+    "The benchmark has strong coverage of temporal, precedence, exception, regional, workflow, and multi-hop behavior.",
+    "Only a small subset of questions directly stress graph/structured representations; this is acceptable for a shared benchmark, but those queries should be highlighted in the demo.",
+    "Exact-value questions are intentionally useful as baseline retrieval tests; they should not be treated as evidence that one representation is universally better."
+  ]
+}

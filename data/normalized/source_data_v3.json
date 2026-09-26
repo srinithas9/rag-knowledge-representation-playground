@@ -1,0 +1,606 @@
+{
+  "dataset_name": "NovaMart Customer & Operations Policy Handbook — 2026",
+  "version": "3.0",
+  "source_document": "novamart_customer_operations_policy_handbook_2026_v3.docx",
+  "policies": [
+    {
+      "source_id": "POL-101",
+      "title": "Customer Tier Definitions",
+      "text": "NovaMart customers are classified as Standard, Premium, or Enterprise. Standard is the default tier for eligible consumer accounts. Premium is a paid or invitation-based tier that adds service and product benefits explicitly listed in Premium policies. Enterprise accounts are business accounts governed by active contract terms where those terms differ from global consumer rules. A customer's tier is evaluated as of the relevant order or service event."
+    },
+    {
+      "source_id": "POL-102",
+      "title": "Standard Customer Eligibility",
+      "text": "A Standard account must have a verified customer identity, a valid delivery address in a supported country, and an Active account status. Suspended and Closed accounts cannot place new orders until their status is restored. Standard customers receive global default policies unless a more specific product, promotion, region, or legal rule applies."
+    },
+    {
+      "source_id": "POL-103",
+      "title": "Premium Customer Eligibility and Benefits",
+      "text": "Premium customers receive all Standard benefits plus Premium-specific benefits where defined. Premium benefits include extended refund windows for eligible products, extended warranty coverage for eligible electronics and appliances, priority support, and selected shipping promotions. Premium status does not override product exclusions, active regional rules, or mandatory legal and safety requirements."
+    },
+    {
+      "source_id": "POL-104",
+      "title": "Enterprise Account Terms",
+      "text": "Enterprise accounts may have contract_id, service_level, support_response_target, and negotiated return arrangements. An active enterprise contract governs the specific matter it explicitly covers. If the contract is silent, the applicable NovaMart default applies. Product-specific legal, safety, and non-negotiable manufacturer restrictions remain applicable."
+    },
+    {
+      "source_id": "POL-105",
+      "title": "Account Status Rules",
+      "text": "Account status is Active, Suspended, or Closed. Active customers can order and use eligible services. Suspended customers may receive existing-order support but cannot create new orders. Closed accounts cannot create new orders or initiate new discretionary service requests, although legally required claims and existing financial obligations may still be processed."
+    },
+    {
+      "source_id": "POL-201",
+      "title": "Global Refund — Standard",
+      "text": "A Standard customer may request a refund within 30 calendar days after delivery for an eligible product. The product must meet the return condition requirements, including required accessories and proof of purchase. The refund is normally returned to the original payment method after inspection. Product-specific, campaign-specific, regional, legal, and customized-product rules may override this default."
+    },
+    {
+      "source_id": "POL-202",
+      "title": "Global Refund — Premium",
+      "text": "The global Premium refund window is determined by the active refund policy version: 45 calendar days from 1 January through 28 February 2026, 60 calendar days from 1 March through 30 June 2026, and 75 calendar days from 1 July through 31 December 2026. This is the customer-tier default for eligible products and does not override a more specific product, promotion, regional, enterprise-contract, legal, or safety rule. The temporal version policies in Section 10 are authoritative for date-specific questions."
+    },
+    {
+      "source_id": "POL-203",
+      "title": "Customized Product Exclusion",
+      "text": "Products configured, engraved, branded, dimensioned, or physically specified specifically for a customer are classified as Customized Products. Customized Products are not eligible for the standard refund program unless a mandatory legal requirement or an explicit product policy states otherwise. Customer tier does not remove this exclusion."
+    },
+    {
+      "source_id": "POL-204",
+      "title": "Promotional Electronics Return Rule",
+      "text": "Electronics carrying promotion code PROMO-ELEC-2026-Q2 may be returned within 15 calendar days of delivery during the campaign's active period. The rule applies to Standard and Premium customers. The campaign rule overrides the general 30-day and 60-day customer-tier windows for qualifying products."
+    },
+    {
+      "source_id": "POL-205",
+      "title": "Partial Refunds",
+      "text": "A partial refund may be approved when a product is retained by the customer despite a documented service issue, missing non-essential accessory, cosmetic defect accepted by the customer, or approved price adjustment. The support case must record the reason and approved amount. Partial-refund approval does not automatically extend or restart the original return window."
+    },
+    {
+      "source_id": "POL-206",
+      "title": "Non-Refundable Categories",
+      "text": "Digital activation codes after activation, personalized financial services, and certain hygiene-sensitive products opened after delivery are non-refundable unless required by law. A product marked non-refundable at checkout must still comply with mandatory consumer-protection requirements applicable to the customer's region."
+    },
+    {
+      "source_id": "POL-207",
+      "title": "Return Condition Requirements",
+      "text": "For ordinary physical-product refunds, the item should be unused where the product policy requires unused condition, include required accessories, and be accompanied by proof of purchase. Damage caused by customer misuse can result in rejection. Packaging requirements vary by product category; missing retail packaging alone does not automatically reject a return when the category policy does not require it."
+    },
+    {
+      "source_id": "POL-208",
+      "title": "Return Pickup and Drop-off",
+      "text": "Eligible returns may use doorstep pickup or an authorized drop-off point. Pickup availability depends on postal code, seller responsibility, item size, and product category. Oversized appliances require scheduled pickup where supported. Marketplace sellers may provide a seller-arranged pickup process when the listing states that the seller is responsible for return logistics."
+    },
+    {
+      "source_id": "POL-209",
+      "title": "Replacement — Electronics",
+      "text": "Eligible electronics may qualify for replacement within 15 calendar days of delivery when the product is defective, damaged in transit, or materially different from the ordered item. Replacement requires verification of the issue. If replacement stock is unavailable, the case may move to refund review under the applicable refund policy."
+    },
+    {
+      "source_id": "POL-210",
+      "title": "Replacement — Appliances",
+      "text": "Eligible appliances may qualify for replacement within 10 calendar days of delivery for transit damage, manufacturing defect identified during the initial inspection period, or wrong-item delivery. Large-appliance pickup and inspection are required before replacement approval in most serviceable postal codes."
+    },
+    {
+      "source_id": "POL-211",
+      "title": "Replacement — Fashion",
+      "text": "Eligible fashion products may qualify for replacement within 7 calendar days of delivery for wrong size, wrong item, manufacturing defect, or transit damage when stock is available. Used or washed items generally do not qualify for replacement unless a manufacturing defect is established."
+    },
+    {
+      "source_id": "POL-212",
+      "title": "Replacement — Customized Products",
+      "text": "Customized products normally do not qualify for preference-based replacement. A replacement may be approved when the delivered item differs from the approved customization specification, arrives damaged, or has a manufacturing defect, subject to verification."
+    },
+    {
+      "source_id": "POL-301",
+      "title": "Product Category Rules",
+      "text": "NovaMart product categories include Electronics, Home Appliances, Fashion, Beauty & Personal Care, Customized Products, Digital Products, and Accessories. Category-level rules apply unless a product-specific rule, campaign, regional rule, enterprise term, or mandatory requirement is more specific."
+    },
+    {
+      "source_id": "POL-302",
+      "title": "Manufacturer Warranty — Electronics",
+      "text": "Eligible Electronics receive a 12-month manufacturer warranty beginning on delivery. Coverage generally includes manufacturing defects and excludes accidental damage, liquid damage, unauthorized modification, and normal cosmetic wear. Manufacturer-specific warranty terms may add conditions without removing mandatory consumer rights."
+    },
+    {
+      "source_id": "POL-303",
+      "title": "Premium Electronics Warranty",
+      "text": "Premium customers purchasing eligible Electronics receive a 24-month warranty beginning on delivery. This is a warranty duration, not a refund or return window. The 24-month warranty does not extend the applicable refund period unless another policy explicitly states so."
+    },
+    {
+      "source_id": "POL-304",
+      "title": "Appliance Warranty",
+      "text": "Eligible Home Appliances receive an 18-month NovaMart/manufacturer warranty beginning on delivery. Premium customers receive 24 months where the product is marked Premium Warranty Eligible. Warranty service covers qualifying manufacturing defects and excludes misuse, unauthorized repair, and accidental damage."
+    },
+    {
+      "source_id": "POL-305",
+      "title": "Warranty Registration",
+      "text": "Customers may register eligible products within 30 days of delivery to simplify warranty servicing. Failure to register within 30 days does not automatically invalidate a valid warranty when proof of purchase and delivery can be established."
+    },
+    {
+      "source_id": "POL-306",
+      "title": "Product-Specific Warranty Eligibility",
+      "text": "Warranty eligibility is determined by product category and product attributes. A product may be an Electronics item but still be excluded from Premium warranty extension if its product record does not contain premium_warranty_eligible=true. The product record is authoritative for this attribute."
+    },
+    {
+      "source_id": "POL-401",
+      "title": "Order Lifecycle",
+      "text": "Orders progress through Confirmed, Processing, Dispatched, Delivered, and Closed. Cancellation without a standard cancellation fee is available before Dispatched status unless a product-specific rule states otherwise. Refund and return windows normally begin from Delivery rather than Order Date."
+    },
+    {
+      "source_id": "POL-402",
+      "title": "Cancellation Before Processing",
+      "text": "Customers may cancel eligible orders before Processing begins without a cancellation fee. Payment authorization may be released automatically or may require provider processing time."
+    },
+    {
+      "source_id": "POL-403",
+      "title": "Cancellation During Processing",
+      "text": "Cancellation during Processing is best-effort. If fulfillment has already committed the item for dispatch, the order may proceed to dispatch and then follow the post-dispatch return workflow. A cancellation request is not itself proof that an order was successfully cancelled."
+    },
+    {
+      "source_id": "POL-404",
+      "title": "Cancellation After Dispatch",
+      "text": "Once Dispatched, an order cannot normally be cancelled through the standard cancellation workflow. Where the carrier supports refusal, the customer may refuse delivery. Otherwise, the customer may initiate a return after delivery under the applicable product and customer-tier rules."
+    },
+    {
+      "source_id": "POL-405",
+      "title": "Seller-Fulfilled Orders",
+      "text": "Marketplace products may be fulfilled directly by third-party sellers. Seller-specific dispatch, pickup, and return instructions may apply when clearly shown on the listing. Mandatory NovaMart customer-protection rules continue to apply where the marketplace framework designates them as mandatory."
+    },
+    {
+      "source_id": "POL-501",
+      "title": "Standard Shipping — India",
+      "text": "Standard shipping in India targets 3–6 business days after dispatch. Orders with eligible merchandise value below INR 999 incur an INR 79 standard shipping fee. Delivery targets exclude certain remote postal codes and exceptional carrier disruptions."
+    },
+    {
+      "source_id": "POL-502",
+      "title": "Free Standard Shipping Threshold — India",
+      "text": "Eligible merchandise value of INR 999 or more qualifies for free Standard shipping in India. The threshold is calculated after product-level discounts and before gift-card redemption. Express shipping charges are not waived by this threshold."
+    },
+    {
+      "source_id": "POL-503",
+      "title": "Express Shipping — India",
+      "text": "Express shipping costs INR 199 per order and targets 1–2 business days after dispatch where the product and postal code are eligible. Oversized items, seller-fulfilled products, and restricted postal codes may be excluded."
+    },
+    {
+      "source_id": "POL-504",
+      "title": "Remote Postal Codes",
+      "text": "Remote postal codes may have extended delivery targets and may be ineligible for Express shipping or doorstep return pickup. The fulfillment system's postal-code eligibility flag is authoritative at checkout."
+    },
+    {
+      "source_id": "POL-505",
+      "title": "International Shipping",
+      "text": "International shipping availability varies by product category, destination, customs restrictions, and seller fulfillment capability. Taxes and duties may be payable by the customer unless the listing states otherwise. Region-specific return rules remain applicable to eligible delivered products."
+    },
+    {
+      "source_id": "POL-601",
+      "title": "Seller Onboarding Requirements",
+      "text": "Marketplace sellers must maintain verified business identity, payout details, product information, inventory status, dispatch capability, and required category certifications. Sellers are responsible for accurate listing information and must not misrepresent warranty or return terms."
+    },
+    {
+      "source_id": "POL-602",
+      "title": "Seller Dispatch SLA",
+      "text": "Standard marketplace sellers must dispatch stocked products within 2 business days unless the listing specifies a different committed SLA. Premium-seller status may require a 1-business-day dispatch target. Pre-order products follow their stated release date rather than the standard dispatch SLA."
+    },
+    {
+      "source_id": "POL-603",
+      "title": "Seller Customer Disputes",
+      "text": "Sellers must respond to marketplace dispute requests within 1 business day. NovaMart may intervene when the seller does not respond, when a safety concern is raised, or when mandatory customer-protection rules are implicated. Seller liability does not remove NovaMart's platform-level escalation responsibilities."
+    },
+    {
+      "source_id": "POL-604",
+      "title": "Seller Performance Actions",
+      "text": "Repeated late dispatch, cancellation without valid cause, inaccurate product information, or failure to resolve eligible customer cases may result in warning, temporary listing restrictions, suspension, or marketplace removal. Performance decisions use documented order and case evidence."
+    },
+    {
+      "source_id": "POL-701",
+      "title": "Supported Payment Methods — India",
+      "text": "NovaMart supports eligible debit cards, credit cards, UPI, net banking, NovaMart gift cards, and supported wallets in India. Payment authorization occurs before order confirmation. Some high-value transactions may require additional verification."
+    },
+    {
+      "source_id": "POL-702",
+      "title": "Failed Payments",
+      "text": "A failed payment does not create a confirmed order unless NovaMart records successful authorization or another valid payment confirmation. A temporary bank authorization may remain pending and later release according to the payment provider's rules."
+    },
+    {
+      "source_id": "POL-703",
+      "title": "Duplicate Payment",
+      "text": "When the same order produces multiple successful payment captures, the duplicate-capture case is investigated using payment transaction identifiers. An approved duplicate refund is returned through the corresponding payment rail where possible."
+    },
+    {
+      "source_id": "POL-704",
+      "title": "Refund Initiation and Settlement",
+      "text": "After an approved return passes inspection, NovaMart normally initiates the refund within 3 business days. Card refunds may take up to 7 additional business days after initiation. UPI, wallet, bank, and gift-card settlement times vary by provider and instrument. A refund initiation date and transaction reference are stored for traceability."
+    },
+    {
+      "source_id": "POL-705",
+      "title": "Gift Card Refunds",
+      "text": "NovaMart gift-card balances are generally returned to the supported gift-card mechanism rather than paid as cash. Cash refunds may be required by applicable law or an approved exception. A gift-card refund does not necessarily restore the purchaser's original payment instrument."
+    },
+    {
+      "source_id": "POL-801",
+      "title": "Level 1 Support",
+      "text": "Level 1 support handles routine order status, basic return eligibility, delivery updates, payment-status questions, and standard account requests. The target first response is 8 business hours during support operating hours."
+    },
+    {
+      "source_id": "POL-802",
+      "title": "Level 2 Support",
+      "text": "A case may move to Level 2 after two documented Level 1 interactions without resolution, when the issue involves a complex refund or replacement exception, or when the customer provides evidence requiring specialist review. Level 2 has a target first response of 4 business hours during support operating hours."
+    },
+    {
+      "source_id": "POL-803",
+      "title": "Financial Dispute Escalation",
+      "text": "Suspected duplicate charges, unauthorized payment concerns, high-value payment disputes, and unresolved refund settlement issues may be routed to the Financial Disputes queue. A financial escalation does not itself determine whether a product return is eligible."
+    },
+    {
+      "source_id": "POL-804",
+      "title": "Safety and Regulatory Escalation",
+      "text": "Safety complaints, suspected dangerous-product incidents, regulatory complaints, and serious product hazards require specialist or compliance routing without waiting for two routine support interactions. The case must retain the original evidence and product/order identifiers."
+    },
+    {
+      "source_id": "POL-805",
+      "title": "Complaint Categories",
+      "text": "Complaints are categorized as Billing, Delivery, Product Quality, Seller Conduct, Support Conduct, Safety, or Regulatory. Categorization supports routing and reporting. A complaint category does not automatically change refund eligibility; the applicable product, region, customer-tier, and exception policies still govern the underlying transaction."
+    },
+    {
+      "source_id": "POL-901",
+      "title": "India Refund Rules",
+      "text": "For eligible products delivered in India, the active global Standard and Premium refund windows apply unless a more specific Indian, product, campaign, or legal rule applies. During 1 April–30 June 2026, qualifying PROMO-ELEC-2026-Q2 electronics use the 15-day campaign window. After the campaign expires, the active global refund version applies unless another more specific rule governs."
+    },
+    {
+      "source_id": "POL-902",
+      "title": "Singapore Refund Rules",
+      "text": "For eligible products delivered in Singapore, Standard customers have a 21-day refund request window and Premium customers have a 45-day refund request window during the active Singapore regional policy period. Customized products remain excluded. The Singapore rule overrides the global customer-tier default for its scope."
+    },
+    {
+      "source_id": "POL-903",
+      "title": "UAE Refund Rules",
+      "text": "For eligible products delivered in the UAE, Standard customers have a 14-day refund request window and Premium customers have a 30-day window unless a product-specific or legal rule provides a different requirement. Customized products remain excluded under the general customized-product policy unless law requires otherwise."
+    },
+    {
+      "source_id": "POL-904",
+      "title": "United Kingdom Refund Rules",
+      "text": "For UK orders, statutory consumer rights may provide cancellation or return rights that differ from NovaMart's discretionary global policy. Where a mandatory legal right applies, the legal requirement takes precedence over the discretionary customer-tier policy."
+    },
+    {
+      "source_id": "POL-905",
+      "title": "United States Refund Rules",
+      "text": "For eligible products delivered in the United States, Standard customers have a 30-day refund request window and Premium customers have a 60-day window, subject to product-specific exclusions and applicable state or federal requirements."
+    },
+    {
+      "source_id": "POL-1001",
+      "title": "Policy Precedence",
+      "text": "When multiple policies appear applicable, apply the most specific active rule in this order: (1) mandatory legal or safety requirement; (2) active region-specific rule; (3) product-specific rule or explicit campaign rule; (4) active enterprise contract term for the matter it explicitly covers; (5) customer-tier rule; (6) global default. A rule overrides a lower-level rule only for the scope it explicitly covers."
+    },
+    {
+      "source_id": "POL-1002",
+      "title": "Effective Dates and Historical Queries",
+      "text": "A policy applies only during its active effective period. If a policy has an expiry date, it ceases to govern after expiry unless another active policy replaces it. Historical questions must be answered using the version active on the referenced date, not the current version."
+    },
+    {
+      "source_id": "POL-1003",
+      "title": "Refund Policy Version 1",
+      "text": "From 1 January through 28 February 2026, the global Standard refund window was 30 days and the global Premium refund window was 45 days. Product-specific and regional rules could override these defaults."
+    },
+    {
+      "source_id": "POL-1004",
+      "title": "Refund Policy Version 2",
+      "text": "From 1 March through 30 June 2026, the global Standard refund window was 30 days and the global Premium refund window was 60 days. The Q2 promotional electronics rule introduced a 15-day window for qualifying promotion-tagged electronics from 1 April through 30 June."
+    },
+    {
+      "source_id": "POL-1005",
+      "title": "Refund Policy Version 3",
+      "text": "From 1 July through 31 December 2026, the global Standard refund window remained 30 days while the global Premium refund window increased to 75 days for eligible products. Product-specific, regional, campaign, legal, and customized-product rules remain capable of overriding the global default."
+    },
+    {
+      "source_id": "POL-1006",
+      "title": "Q2 Promotion Version",
+      "text": "PROMO-ELEC-2026-Q2 provides a 15-day return window for qualifying electronics. The product listing must contain the exact promotion code, and the return request must fall within the campaign period. The campaign rule overrides the applicable global customer-tier default for qualifying promotional items during the campaign period. After 30 June 2026, the campaign rule is no longer active."
+    },
+    {
+      "source_id": "POL-1007",
+      "title": "Policy Change Management",
+      "text": "Material policy changes require a version identifier, effective date, owner, and change summary. Systems consuming policy data should retain historical versions rather than overwriting them. This supports customer-service audits and date-specific questions."
+    }
+  ],
+  "products": [
+    {
+      "product_id": "AV-1001",
+      "product_name": "AeroBook Pro",
+      "category": "Electronics",
+      "manufacturer_id": "M-001",
+      "manufacturer_name": "TechNova Systems",
+      "manufacturer_location": "Bengaluru, India",
+      "customized_flag": false,
+      "electronics_flag": true,
+      "promotion_code": null,
+      "premium_warranty_eligible": true,
+      "source_id": "PROD-AV-1001"
+    },
+    {
+      "product_id": "NP-2001",
+      "product_name": "NovaPhone X",
+      "category": "Electronics",
+      "manufacturer_id": "M-002",
+      "manufacturer_name": "Orbit Devices",
+      "manufacturer_location": "Singapore",
+      "customized_flag": false,
+      "electronics_flag": true,
+      "promotion_code": "PROMO-ELEC-2026-Q2",
+      "premium_warranty_eligible": true,
+      "source_id": "PROD-NP-2001"
+    },
+    {
+      "product_id": "HC-3001",
+      "product_name": "HomeCool 500",
+      "category": "Home Appliances",
+      "manufacturer_id": "M-003",
+      "manufacturer_name": "ClimateWorks India",
+      "manufacturer_location": "Pune, India",
+      "customized_flag": false,
+      "electronics_flag": false,
+      "promotion_code": null,
+      "premium_warranty_eligible": true,
+      "source_id": "PROD-HC-3001"
+    },
+    {
+      "product_id": "FT-5001",
+      "product_name": "UrbanWeave Jacket",
+      "category": "Fashion",
+      "manufacturer_id": "M-005",
+      "manufacturer_name": "UrbanWeave Ltd",
+      "manufacturer_location": "Mumbai, India",
+      "customized_flag": false,
+      "electronics_flag": false,
+      "promotion_code": null,
+      "premium_warranty_eligible": false,
+      "source_id": "PROD-FT-5001"
+    },
+    {
+      "product_id": "CP-4001",
+      "product_name": "CustomPrint Studio",
+      "category": "Customized Products",
+      "manufacturer_id": "M-004",
+      "manufacturer_name": "NovaMart Custom Works",
+      "manufacturer_location": "Mumbai, India",
+      "customized_flag": true,
+      "electronics_flag": false,
+      "promotion_code": null,
+      "premium_warranty_eligible": false,
+      "source_id": "PROD-CP-4001"
+    },
+    {
+      "product_id": "AC-6001",
+      "product_name": "ChargeMax 65W",
+      "category": "Accessories",
+      "manufacturer_id": "M-006",
+      "manufacturer_name": "VoltEdge",
+      "manufacturer_location": "Dubai, UAE",
+      "customized_flag": false,
+      "electronics_flag": false,
+      "promotion_code": null,
+      "premium_warranty_eligible": false,
+      "source_id": "PROD-AC-6001"
+    },
+    {
+      "product_id": "DN-7001",
+      "product_name": "NovaLearn Pro Code",
+      "category": "Digital Products",
+      "manufacturer_id": "M-007",
+      "manufacturer_name": "NovaLearn",
+      "manufacturer_location": "London, UK",
+      "customized_flag": false,
+      "electronics_flag": false,
+      "promotion_code": null,
+      "premium_warranty_eligible": false,
+      "source_id": "PROD-DN-7001"
+    },
+    {
+      "product_id": "BL-8001",
+      "product_name": "PureGlow Serum",
+      "category": "Beauty & Personal Care",
+      "manufacturer_id": "M-008",
+      "manufacturer_name": "GlowLabs",
+      "manufacturer_location": "Singapore",
+      "customized_flag": false,
+      "electronics_flag": false,
+      "promotion_code": null,
+      "premium_warranty_eligible": false,
+      "source_id": "PROD-BL-8001"
+    }
+  ],
+  "manufacturers": [
+    {
+      "manufacturer_id": "M-001",
+      "name": "TechNova Systems",
+      "location": "Bengaluru, India",
+      "category": "Electronics",
+      "source_id": "MFG-M-001"
+    },
+    {
+      "manufacturer_id": "M-002",
+      "name": "Orbit Devices",
+      "location": "Singapore",
+      "category": "Electronics",
+      "source_id": "MFG-M-002"
+    },
+    {
+      "manufacturer_id": "M-003",
+      "name": "ClimateWorks India",
+      "location": "Pune, India",
+      "category": "Home Appliances",
+      "source_id": "MFG-M-003"
+    },
+    {
+      "manufacturer_id": "M-004",
+      "name": "NovaMart Custom Works",
+      "location": "Mumbai, India",
+      "category": "Customized Products",
+      "source_id": "MFG-M-004"
+    },
+    {
+      "manufacturer_id": "M-005",
+      "name": "UrbanWeave Ltd",
+      "location": "Mumbai, India",
+      "category": "Fashion",
+      "source_id": "MFG-M-005"
+    },
+    {
+      "manufacturer_id": "M-006",
+      "name": "VoltEdge",
+      "location": "Dubai, UAE",
+      "category": "Accessories",
+      "source_id": "MFG-M-006"
+    },
+    {
+      "manufacturer_id": "M-007",
+      "name": "NovaLearn",
+      "location": "London, UK",
+      "category": "Digital Products",
+      "source_id": "MFG-M-007"
+    },
+    {
+      "manufacturer_id": "M-008",
+      "name": "GlowLabs",
+      "location": "Singapore",
+      "category": "Beauty & Personal Care",
+      "source_id": "MFG-M-008"
+    }
+  ],
+  "sellers": [
+    {
+      "seller_id": "S-001",
+      "name": "NovaMart Direct",
+      "type": "Platform",
+      "categories": [
+        "Electronics",
+        "Home Appliances"
+      ],
+      "dispatch_sla_business_days": 1
+    },
+    {
+      "seller_id": "S-002",
+      "name": "TechHub Marketplace",
+      "type": "Third-party",
+      "categories": [
+        "Electronics"
+      ],
+      "dispatch_sla_business_days": 2
+    },
+    {
+      "seller_id": "S-003",
+      "name": "HomePro Sellers",
+      "type": "Third-party",
+      "categories": [
+        "Home Appliances"
+      ],
+      "dispatch_sla_business_days": 2
+    },
+    {
+      "seller_id": "S-004",
+      "name": "UrbanStyle Collective",
+      "type": "Third-party",
+      "categories": [
+        "Fashion"
+      ],
+      "dispatch_sla_business_days": 2
+    },
+    {
+      "seller_id": "S-005",
+      "name": "GlowHouse",
+      "type": "Third-party",
+      "categories": [
+        "Beauty & Personal Care"
+      ],
+      "dispatch_sla_business_days": 2
+    }
+  ],
+  "customers": [
+    {
+      "customer_id": "C-001",
+      "name": "Anika Rao",
+      "tier": "Standard",
+      "country": "India",
+      "status": "Active",
+      "contract_id": null
+    },
+    {
+      "customer_id": "C-002",
+      "name": "Rahul Mehta",
+      "tier": "Premium",
+      "country": "India",
+      "status": "Active",
+      "contract_id": null
+    },
+    {
+      "customer_id": "C-003",
+      "name": "Maya Tan",
+      "tier": "Premium",
+      "country": "Singapore",
+      "status": "Active",
+      "contract_id": null
+    },
+    {
+      "customer_id": "C-004",
+      "name": "Daniel Brooks",
+      "tier": "Standard",
+      "country": "US",
+      "status": "Active",
+      "contract_id": null
+    },
+    {
+      "customer_id": "C-005",
+      "name": "Aisha Khan",
+      "tier": "Enterprise",
+      "country": "India",
+      "status": "Active",
+      "contract_id": "ENT-IND-01"
+    },
+    {
+      "customer_id": "C-006",
+      "name": "Omar Al Mansoori",
+      "tier": "Premium",
+      "country": "UAE",
+      "status": "Active",
+      "contract_id": null
+    }
+  ],
+  "temporal_versions": [
+    {
+      "version_id": "RP-2026-V1",
+      "effective": "2026-01-01",
+      "expiry": "2026-02-28",
+      "standard_days": 30,
+      "premium_days": 45
+    },
+    {
+      "version_id": "RP-2026-V2",
+      "effective": "2026-03-01",
+      "expiry": "2026-06-30",
+      "standard_days": 30,
+      "premium_days": 60
+    },
+    {
+      "version_id": "RP-2026-V3",
+      "effective": "2026-07-01",
+      "expiry": "2026-12-31",
+      "standard_days": 30,
+      "premium_days": 75
+    }
+  ],
+  "design_principles": {
+    "single_source_of_truth": true,
+    "stable_policy_ids": true,
+    "temporal_versioning": true,
+    "cross_entity_relationships": true,
+    "evaluation_separate_from_source": true
+  },
+  "reference_sections": [
+    {
+      "source_id": "REF-GRAPH-001",
+      "title": "Core Graph Relationships",
+      "text": "Core graph paths: Customer → Order → Product → Manufacturer → Location; Customer → Tier → Policy → Region; Product → Promotion → Policy → Return Window; Order → Support Case → Escalation Level → Response SLA."
+    },
+    {
+      "source_id": "REF-ENTITY-MODEL",
+      "title": "Core Structured Entity Model",
+      "text": "Main entities: Customer, Order, Product, Manufacturer, Seller, Policy, Support Case, Promotion. Important fields include customer_tier, country, account_status, contract_id, category, manufacturer_id, customized_flag, promotion_code, warranty_months, policy scope/tier/region/product/category/effective/expiry/precedence, and support escalation attributes."
+    }
+  ]
+}

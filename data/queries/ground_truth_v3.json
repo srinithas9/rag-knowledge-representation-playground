@@ -1,0 +1,304 @@
+{
+  "version": "3.0",
+  "ground_truth": [
+    {
+      "query_id": "Q001",
+      "expected_answer": "30 calendar days",
+      "required_source_ids": [
+        "POL-1005"
+      ]
+    },
+    {
+      "query_id": "Q002",
+      "expected_answer": "75 calendar days",
+      "required_source_ids": [
+        "POL-1005"
+      ]
+    },
+    {
+      "query_id": "Q003",
+      "expected_answer": "45 calendar days",
+      "required_source_ids": [
+        "POL-1003",
+        "POL-1002"
+      ]
+    },
+    {
+      "query_id": "Q004",
+      "expected_answer": "60 calendar days",
+      "required_source_ids": [
+        "POL-1004",
+        "POL-1002"
+      ]
+    },
+    {
+      "query_id": "Q005",
+      "expected_answer": "15 calendar days",
+      "required_source_ids": [
+        "POL-204",
+        "POL-1006",
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q006",
+      "expected_answer": "No; the customized-product exclusion applies.",
+      "required_source_ids": [
+        "POL-203",
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q007",
+      "expected_answer": "45 calendar days during the active Singapore regional policy.",
+      "required_source_ids": [
+        "POL-902",
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q008",
+      "expected_answer": "14 calendar days unless a more specific/legal rule applies.",
+      "required_source_ids": [
+        "POL-903"
+      ]
+    },
+    {
+      "query_id": "Q009",
+      "expected_answer": "24 months",
+      "required_source_ids": [
+        "POL-303"
+      ]
+    },
+    {
+      "query_id": "Q010",
+      "expected_answer": "No; warranty duration and refund window are separate.",
+      "required_source_ids": [
+        "POL-303",
+        "POL-202"
+      ]
+    },
+    {
+      "query_id": "Q011",
+      "expected_answer": "15 calendar days",
+      "required_source_ids": [
+        "POL-209"
+      ]
+    },
+    {
+      "query_id": "Q012",
+      "expected_answer": "10 calendar days",
+      "required_source_ids": [
+        "POL-210"
+      ]
+    },
+    {
+      "query_id": "Q013",
+      "expected_answer": "7 calendar days",
+      "required_source_ids": [
+        "POL-211"
+      ]
+    },
+    {
+      "query_id": "Q014",
+      "expected_answer": "INR 999 eligible merchandise value.",
+      "required_source_ids": [
+        "POL-502"
+      ]
+    },
+    {
+      "query_id": "Q015",
+      "expected_answer": "INR 199 per order.",
+      "required_source_ids": [
+        "POL-503"
+      ]
+    },
+    {
+      "query_id": "Q016",
+      "expected_answer": "From the delivery date.",
+      "required_source_ids": [
+        "POL-201",
+        "POL-401"
+      ]
+    },
+    {
+      "query_id": "Q017",
+      "expected_answer": "No.",
+      "required_source_ids": [
+        "POL-404"
+      ]
+    },
+    {
+      "query_id": "Q018",
+      "expected_answer": "TechNova Systems",
+      "required_source_ids": [
+        "PROD-AV-1001"
+      ]
+    },
+    {
+      "query_id": "Q019",
+      "expected_answer": "Bengaluru, India",
+      "required_source_ids": [
+        "PROD-AV-1001",
+        "MFG-M-001"
+      ]
+    },
+    {
+      "query_id": "Q020",
+      "expected_answer": "Orbit Devices; Singapore",
+      "required_source_ids": [
+        "PROD-NP-2001",
+        "MFG-M-002"
+      ]
+    },
+    {
+      "query_id": "Q021",
+      "expected_answer": "The active region-specific rule.",
+      "required_source_ids": [
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q022",
+      "expected_answer": "The customized-product exclusion.",
+      "required_source_ids": [
+        "POL-203",
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q023",
+      "expected_answer": "Safety or regulatory concerns, among the specified immediate-escalation cases.",
+      "required_source_ids": [
+        "POL-804"
+      ]
+    },
+    {
+      "query_id": "Q024",
+      "expected_answer": "4 business hours during support operating hours.",
+      "required_source_ids": [
+        "POL-802"
+      ]
+    },
+    {
+      "query_id": "Q025",
+      "expected_answer": "The active enterprise contract term governs that support matter.",
+      "required_source_ids": [
+        "POL-104",
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q026",
+      "expected_answer": "NovaMart may intervene, particularly where customer-protection or safety requirements are implicated.",
+      "required_source_ids": [
+        "POL-603"
+      ]
+    },
+    {
+      "query_id": "Q027",
+      "expected_answer": "2 business days unless the listing specifies another committed SLA.",
+      "required_source_ids": [
+        "POL-602"
+      ]
+    },
+    {
+      "query_id": "Q028",
+      "expected_answer": "No.",
+      "required_source_ids": [
+        "POL-305"
+      ]
+    },
+    {
+      "query_id": "Q029",
+      "expected_answer": "Product category/ID, promotion_code, customer tier, region, effective dates, and relevant product attributes.",
+      "required_source_ids": [
+        "REF-ENTITY-MODEL",
+        "POL-1006",
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q030",
+      "expected_answer": "Mandatory legal/safety; region-specific; product/campaign; active enterprise contract for its scope; customer-tier; global default.",
+      "required_source_ids": [
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q031",
+      "expected_answer": "Customer → Order → Product → Manufacturer → Location.",
+      "required_source_ids": [
+        "REF-GRAPH-001"
+      ]
+    },
+    {
+      "query_id": "Q032",
+      "expected_answer": "45 calendar days, because the active Singapore regional rule governs its scope.",
+      "required_source_ids": [
+        "POL-902",
+        "POL-1001"
+      ]
+    },
+    {
+      "query_id": "Q033",
+      "expected_answer": "75 calendar days.",
+      "required_source_ids": [
+        "POL-1005"
+      ]
+    },
+    {
+      "query_id": "Q034",
+      "expected_answer": "75 calendar days; the Q2 promotional campaign expired on 30 June 2026, so the active July–December 2026 global Premium window applies.",
+      "required_source_ids": [
+        "POL-1005",
+        "POL-1006",
+        "POL-1002"
+      ]
+    },
+    {
+      "query_id": "Q035",
+      "expected_answer": "Within 3 business days.",
+      "required_source_ids": [
+        "POL-704"
+      ]
+    },
+    {
+      "query_id": "Q036",
+      "expected_answer": "It is generally returned through the supported gift-card mechanism rather than as cash, subject to law/approved exception.",
+      "required_source_ids": [
+        "POL-705"
+      ]
+    },
+    {
+      "query_id": "Q037",
+      "expected_answer": "No; underlying product, region, tier, and applicable exception policies determine eligibility.",
+      "required_source_ids": [
+        "POL-805"
+      ]
+    },
+    {
+      "query_id": "Q038",
+      "expected_answer": "Customer, Order, Product, Manufacturer, Seller, Policy, Support Case, Promotion and their documented relationships.",
+      "required_source_ids": [
+        "REF-ENTITY-MODEL"
+      ]
+    },
+    {
+      "query_id": "Q039",
+      "expected_answer": "HomeCool 500; Home Appliances.",
+      "required_source_ids": [
+        "PROD-HC-3001",
+        "MFG-M-003"
+      ]
+    },
+    {
+      "query_id": "Q040",
+      "expected_answer": "Refund Policy Version 1, active from 1 January through 28 February 2026.",
+      "required_source_ids": [
+        "POL-1003",
+        "POL-1002"
+      ]
+    }
+  ]
+}

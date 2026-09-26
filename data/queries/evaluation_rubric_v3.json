@@ -1,0 +1,49 @@
+{
+  "version": "3.0",
+  "retrieval_metrics": [
+    "Precision@K",
+    "Recall@K",
+    "MRR",
+    "nDCG@K when graded relevance is available",
+    "retrieval_latency_ms"
+  ],
+  "answer_metrics": [
+    "answer_correctness",
+    "answer_groundedness",
+    "evidence_attribution"
+  ],
+  "required_evidence_fields": [
+    "content",
+    "source_id",
+    "score",
+    "metadata"
+  ],
+  "required_experiment_fields": [
+    "query_id",
+    "representation",
+    "retrieval_method",
+    "top_k",
+    "retrieved_evidence",
+    "required_source_ids"
+  ],
+  "failure_modes": [
+    "semantic near-match",
+    "wrong policy version",
+    "wrong customer tier",
+    "wrong region",
+    "exception ignored",
+    "multi-hop path incomplete",
+    "irrelevant evidence overload",
+    "correct answer with unsupported evidence"
+  ],
+  "principle": "Evaluate the evidence first, then the answer. Never treat a correct answer alone as proof of correct retrieval.",
+  "benchmark_integrity_checks": [
+    "Every required_source_id must exist in the handbook or its normalized source/reference sections.",
+    "Date-specific questions must resolve using the policy active on the referenced date.",
+    "Campaign rules apply only during their active campaign period.",
+    "Regional rules must not silently conflict with temporal global versions; India policy defers to the active global version except for explicitly more specific India, campaign, or legal rules.",
+    "The same underlying source knowledge and evaluation questions must be used across representations and retrieval methods.",
+    "Evidence must preserve stable source_id values so retrieval results can be traced back to handbook content."
+  ],
+  "version_notes": "V3 resolves temporal/regional ambiguity, replaces non-document synthetic IDs with handbook reference IDs, and makes Q034 a deterministic expired-campaign test."
+}

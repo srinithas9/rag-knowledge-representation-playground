@@ -1,0 +1,380 @@
+{
+  "version": "3.0",
+  "questions": [
+    {
+      "query_id": "Q001",
+      "question": "What is the global Standard refund window during August 2026?",
+      "type": "temporal_exact",
+      "tags": [
+        "temporal",
+        "global",
+        "exact"
+      ]
+    },
+    {
+      "query_id": "Q002",
+      "question": "What is the global Premium refund window during August 2026?",
+      "type": "temporal_exact",
+      "tags": [
+        "temporal",
+        "global",
+        "exact"
+      ]
+    },
+    {
+      "query_id": "Q003",
+      "question": "What was the global Premium refund window in February 2026?",
+      "type": "historical",
+      "tags": [
+        "historical",
+        "temporal",
+        "versioning"
+      ]
+    },
+    {
+      "query_id": "Q004",
+      "question": "What was the global Premium refund window in May 2026?",
+      "type": "historical",
+      "tags": [
+        "historical",
+        "temporal",
+        "versioning"
+      ]
+    },
+    {
+      "query_id": "Q005",
+      "question": "A Premium customer in India buys a qualifying PROMO-ELEC-2026-Q2 phone on 10 May 2026. What return window applies?",
+      "type": "multi_condition",
+      "tags": [
+        "multi_condition",
+        "promotion",
+        "precedence",
+        "temporal"
+      ]
+    },
+    {
+      "query_id": "Q006",
+      "question": "A Premium customer buys a customized AeroBook Pro. Is the normal Premium refund window applicable?",
+      "type": "exception",
+      "tags": [
+        "exception",
+        "product_attribute",
+        "precedence"
+      ]
+    },
+    {
+      "query_id": "Q007",
+      "question": "What is the Singapore refund window for Premium customers?",
+      "type": "regional",
+      "tags": [
+        "regional",
+        "customer_tier",
+        "precedence"
+      ]
+    },
+    {
+      "query_id": "Q008",
+      "question": "What is the UAE refund window for Standard customers?",
+      "type": "regional",
+      "tags": [
+        "regional",
+        "exact"
+      ]
+    },
+    {
+      "query_id": "Q009",
+      "question": "How long is the Premium warranty for eligible electronics?",
+      "type": "exact_value",
+      "tags": [
+        "exact",
+        "warranty"
+      ]
+    },
+    {
+      "query_id": "Q010",
+      "question": "Does a 24-month Premium electronics warranty give the customer 24 months to request a refund?",
+      "type": "distinction",
+      "tags": [
+        "distinction",
+        "warranty_vs_refund"
+      ]
+    },
+    {
+      "query_id": "Q011",
+      "question": "What is the replacement window for an eligible defective electronics product?",
+      "type": "exact_value",
+      "tags": [
+        "exact",
+        "replacement",
+        "category"
+      ]
+    },
+    {
+      "query_id": "Q012",
+      "question": "What is the replacement window for an eligible appliance?",
+      "type": "exact_value",
+      "tags": [
+        "exact",
+        "replacement",
+        "category"
+      ]
+    },
+    {
+      "query_id": "Q013",
+      "question": "What is the replacement window for eligible fashion products?",
+      "type": "exact_value",
+      "tags": [
+        "exact",
+        "replacement",
+        "category"
+      ]
+    },
+    {
+      "query_id": "Q014",
+      "question": "What is the free Standard shipping threshold in India?",
+      "type": "numeric",
+      "tags": [
+        "exact",
+        "shipping"
+      ]
+    },
+    {
+      "query_id": "Q015",
+      "question": "How much does Express shipping cost in India?",
+      "type": "numeric",
+      "tags": [
+        "exact",
+        "shipping"
+      ]
+    },
+    {
+      "query_id": "Q016",
+      "question": "When does the refund clock normally start?",
+      "type": "rule",
+      "tags": [
+        "workflow",
+        "temporal"
+      ]
+    },
+    {
+      "query_id": "Q017",
+      "question": "Can a customer cancel an order after it has been dispatched through the standard cancellation workflow?",
+      "type": "workflow",
+      "tags": [
+        "workflow",
+        "order_status"
+      ]
+    },
+    {
+      "query_id": "Q018",
+      "question": "Which company manufactures AeroBook Pro?",
+      "type": "relationship",
+      "tags": [
+        "relationship",
+        "product_manufacturer"
+      ]
+    },
+    {
+      "query_id": "Q019",
+      "question": "Where is the manufacturer of AeroBook Pro located?",
+      "type": "multi_hop",
+      "tags": [
+        "multi_hop",
+        "product_manufacturer_location"
+      ]
+    },
+    {
+      "query_id": "Q020",
+      "question": "Which manufacturer makes NovaPhone X and where is that manufacturer located?",
+      "type": "multi_hop",
+      "tags": [
+        "multi_hop",
+        "product_manufacturer_location"
+      ]
+    },
+    {
+      "query_id": "Q021",
+      "question": "Which rule takes precedence when a region-specific rule conflicts with a global default?",
+      "type": "precedence",
+      "tags": [
+        "precedence",
+        "regional"
+      ]
+    },
+    {
+      "query_id": "Q022",
+      "question": "Which rule takes precedence for a customized product: Premium tier or customized-product exclusion?",
+      "type": "precedence",
+      "tags": [
+        "precedence",
+        "exception"
+      ]
+    },
+    {
+      "query_id": "Q023",
+      "question": "What support issue should be routed immediately without waiting for two routine interactions?",
+      "type": "escalation",
+      "tags": [
+        "escalation",
+        "safety"
+      ]
+    },
+    {
+      "query_id": "Q024",
+      "question": "What is the Level 2 first-response target?",
+      "type": "numeric",
+      "tags": [
+        "exact",
+        "support_sla"
+      ]
+    },
+    {
+      "query_id": "Q025",
+      "question": "What happens if an enterprise contract specifies a different support response target?",
+      "type": "precedence",
+      "tags": [
+        "precedence",
+        "enterprise"
+      ]
+    },
+    {
+      "query_id": "Q026",
+      "question": "What happens if a seller fails to respond to a marketplace dispute?",
+      "type": "seller_workflow",
+      "tags": [
+        "workflow",
+        "seller"
+      ]
+    },
+    {
+      "query_id": "Q027",
+      "question": "How long do eligible marketplace sellers normally have to dispatch stocked products?",
+      "type": "seller_sla",
+      "tags": [
+        "exact",
+        "seller_sla"
+      ]
+    },
+    {
+      "query_id": "Q028",
+      "question": "Does failure to register a warranty within 30 days automatically invalidate it?",
+      "type": "exception",
+      "tags": [
+        "exception",
+        "warranty"
+      ]
+    },
+    {
+      "query_id": "Q029",
+      "question": "What fields are important when deciding whether a product qualifies for a promotional return exception?",
+      "type": "structured",
+      "tags": [
+        "structured",
+        "metadata",
+        "promotion"
+      ]
+    },
+    {
+      "query_id": "Q030",
+      "question": "What is the policy precedence order?",
+      "type": "precedence",
+      "tags": [
+        "precedence",
+        "governance"
+      ]
+    },
+    {
+      "query_id": "Q031",
+      "question": "What is the relationship path from a customer to a manufacturer's location for a purchased product?",
+      "type": "graph",
+      "tags": [
+        "graph",
+        "multi_hop"
+      ]
+    },
+    {
+      "query_id": "Q032",
+      "question": "What is the refund period for a Premium customer in Singapore in May 2026?",
+      "type": "multi_condition_temporal",
+      "tags": [
+        "multi_condition",
+        "temporal",
+        "regional"
+      ]
+    },
+    {
+      "query_id": "Q033",
+      "question": "What is the refund period for a Premium customer in India in August 2026 for a normal eligible product?",
+      "type": "multi_condition_temporal",
+      "tags": [
+        "multi_condition",
+        "temporal",
+        "regional"
+      ]
+    },
+    {
+      "query_id": "Q034",
+      "question": "What is the refund period for a Premium customer in India in August 2026 for a product that had qualified for the Q2 promotional campaign but whose return is requested in August?",
+      "type": "temporal_exception",
+      "tags": [
+        "temporal",
+        "exception",
+        "campaign_expiry"
+      ]
+    },
+    {
+      "query_id": "Q035",
+      "question": "After an approved return passes inspection, when does NovaMart normally initiate the refund?",
+      "type": "numeric",
+      "tags": [
+        "exact",
+        "refund_processing"
+      ]
+    },
+    {
+      "query_id": "Q036",
+      "question": "What happens to a gift-card-funded refund?",
+      "type": "payment",
+      "tags": [
+        "payment",
+        "refund"
+      ]
+    },
+    {
+      "query_id": "Q037",
+      "question": "Can a complaint itself change a customer's refund eligibility?",
+      "type": "distinction",
+      "tags": [
+        "distinction",
+        "complaint_vs_eligibility"
+      ]
+    },
+    {
+      "query_id": "Q038",
+      "question": "What are the main entities and relationships needed for a structured representation of this handbook?",
+      "type": "structured",
+      "tags": [
+        "structured",
+        "entity_model"
+      ]
+    },
+    {
+      "query_id": "Q039",
+      "question": "Which product is manufactured by ClimateWorks India and what category is it?",
+      "type": "relationship",
+      "tags": [
+        "relationship",
+        "product_category_manufacturer"
+      ]
+    },
+    {
+      "query_id": "Q040",
+      "question": "Which policy version should answer a customer asking about the Premium refund rule on 15 February 2026?",
+      "type": "historical",
+      "tags": [
+        "historical",
+        "versioning"
+      ]
+    }
+  ]
+}
