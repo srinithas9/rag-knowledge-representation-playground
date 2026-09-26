@@ -1,181 +1,181 @@
 # Team Assignments
 
-## 1. Project Objective
+## 1. Purpose
 
-The goal of this project is to understand how different ways of representing and storing the same knowledge affect retrieval quality and, ultimately, the evidence available to an LLM.
+The **RAG Knowledge Representation & Retrieval Playground** is a single integrated project designed to study how different ways of representing knowledge and different retrieval strategies affect the evidence retrieved by a RAG system.
 
-All teams work with the same NovaMart source dataset and evaluation benchmark.
+The project uses the same **NovaMart Customer & Operations Policy Handbook — 2026 V3** as the common knowledge source for all teams.
 
-The project compares four knowledge representation approaches:
+The core research question is:
 
-1. Text / Chunked Text
-2. Text + Metadata
-3. Structured Data
-4. Knowledge Graph
+> **How does the combination of knowledge representation and retrieval strategy affect the evidence retrieved for the same question, and how does that evidence affect the final RAG answer?**
 
-Each pair is responsible for the complete pipeline for its representation:
+The project is therefore not four independent RAG applications.
+
+It is one system with multiple representation approaches that can later be compared under a common retrieval and evaluation framework.
+
+---
+
+# 2. Overall Architecture
+
+The project follows this pipeline:
 
 ```text
-NovaMart Source Data
+Same NovaMart Source
         ↓
 Knowledge Representation
         ↓
-Representation-Specific Storage / Index
+Storage / Index
         ↓
 Retrieval
         ↓
-Evidence[]
+Relevant Evidence
+        ↓
+LLM
+        ↓
+Answer
         ↓
 Evaluation
 ```
 
-The purpose is not simply to create different data formats.
+The four representation approaches are:
 
-Each pair must understand and demonstrate:
+1. **Text / Chunked Text**
+2. **Text + Metadata**
+3. **Structured Data**
+4. **Knowledge Graph**
 
-* how the knowledge is represented
-* where/how the representation is stored
-* how it is indexed
-* how relevant information is retrieved
-* what evidence is returned
-* what types of questions the approach handles well
-* where the approach fails or becomes difficult
-
----
-
-# 2. Common Dataset
-
-All pairs MUST use the same NovaMart 2026 dataset.
-
-Source:
+The important distinction is:
 
 ```text
-data/source/
+Representation ≠ Storage ≠ Retrieval
 ```
-
-Normalized data:
-
-```text
-data/normalized/
-```
-
-Evaluation questions:
-
-```text
-data/queries/
-```
-
-Ground truth:
-
-```text
-data/queries/ground_truth_v3.json
-```
-
-Evaluation rubric:
-
-```text
-data/queries/evaluation_rubric_v3.json
-```
-
-Do not create a separate dataset.
-
-Do not modify the shared benchmark without lead approval.
-
----
-
-# 3. Common Pipeline
-
-Every implementation should conceptually follow:
-
-```text
-Source Data
-    ↓
-Parse / Transform
-    ↓
-Representation
-    ↓
-Storage / Index
-    ↓
-Query
-    ↓
-Retrieval
-    ↓
-Evidence[]
-```
-
-The storage technology may differ between pairs because the representation itself differs.
 
 For example:
 
 ```text
 Text
- ↓
-Chunks
- ↓
-Text/Vector/Keyword Index
- ↓
-Retrieval
+  ↓
+Chunked representation
+  ↓
+Search/index/vector store
+  ↓
+Keyword / semantic / hybrid retrieval
 ```
+
+Similarly:
 
 ```text
-Text + Metadata
- ↓
-Chunks + Metadata
- ↓
-Vector Index + Metadata Filtering
- ↓
-Retrieval
+Structured knowledge
+  ↓
+Tables/entities
+  ↓
+SQL database
+  ↓
+SQL retrieval
 ```
+
+And:
 
 ```text
-Structured Data
- ↓
-Tables + Relationships
- ↓
-SQL Database
- ↓
-SQL Retrieval
+Graph knowledge
+  ↓
+Nodes + relationships
+  ↓
+Graph database
+  ↓
+Graph traversal
 ```
-
-```text
-Knowledge Graph
- ↓
-Nodes + Relationships
- ↓
-Graph Database
- ↓
-Graph Traversal
-```
-
-The exact technology is a design decision for each pair and must be justified.
 
 ---
 
-# 4. Common Evidence Contract
+# 3. Team Responsibility Model
 
-All pairs must return evidence using the shared `Evidence` schema.
+The project is divided into two major phases.
+
+## Phase 1 — Representation Ownership
+
+Each pair owns its assigned representation end-to-end **only to the point required to make that representation usable and queryable**.
+
+Every pair is responsible for:
+
+```text
+SOURCE
+  ↓
+REPRESENT
+  ↓
+STORE
+  ↓
+BASIC / NATIVE RETRIEVAL
+  ↓
+Evidence[]
+```
+
+This means each pair must understand:
+
+* the source knowledge relevant to its representation
+* how the knowledge should be represented
+* how that representation should be stored
+* how it can be queried
+* how retrieved results can be converted into the common `Evidence[]` format
+
+### Phase 1 does NOT mean:
+
+* implementing every retrieval technique
+* building the final RAG application
+* creating a separate evaluation framework
+* creating a separate benchmark
+* comparing all four representations
+* implementing every possible representation × retrieval combination
+* changing shared interfaces without approval
+
+---
+
+# 4. Phase 2 — Shared Retrieval & Evaluation
+
+After the four representations are usable, the project moves into a shared experimentation phase.
+
+The lead/shared layer will investigate applicable retrieval strategies across the representations.
 
 Conceptually:
 
-```python
-Evidence(
-    content=...,
-    source_id=...,
-    score=...,
-    metadata=...
-)
+```text
+Same Query
+    ↓
+Representation A + Retrieval Strategy
+Representation B + Retrieval Strategy
+Representation C + Retrieval Strategy
+Representation D + Retrieval Strategy
+    ↓
+Evidence[]
+    ↓
+Common Evaluation
+    ↓
+Comparison
 ```
 
-The rest of the system should not need to know whether the evidence came from:
+Possible retrieval strategies include:
 
-* a vector database
-* a keyword index
-* SQL
-* a graph database
+* keyword retrieval
+* semantic/vector retrieval
+* hybrid retrieval
 * metadata filtering
-* another approved retrieval mechanism
+* reranking
+* SQL retrieval
+* graph traversal
 
-The representation-specific implementation stays behind the common interface.
+Not every retrieval strategy must apply to every representation.
+
+For example:
+
+| Representation  | Applicable retrieval examples                            |
+| --------------- | -------------------------------------------------------- |
+| Text            | Keyword, semantic, hybrid, reranking                     |
+| Text + Metadata | Keyword, semantic, hybrid, metadata filtering, reranking |
+| Structured      | SQL / structured retrieval                               |
+| Knowledge Graph | Graph traversal / graph retrieval                        |
+
+The goal is to compare **meaningful combinations**, not to force every technique onto every representation.
 
 ---
 
@@ -183,117 +183,64 @@ The representation-specific implementation stays behind the common interface.
 
 ## Ownership
 
+Folder:
+
 ```text
 representations/text/
 ```
 
-## Objective
+Pair 1 owns the plain text representation of the NovaMart handbook.
 
-Represent the NovaMart handbook as searchable text chunks and investigate how chunking affects retrieval.
+## Responsibilities
 
-The team should explore how decisions such as:
+The pair should:
 
-* chunk size
-* chunk overlap
-* chunk boundaries
-* preserved metadata
-* source references
+1. Read and understand the NovaMart source.
+2. Extract the relevant textual knowledge.
+3. Clean and normalize the text where appropriate.
+4. Design a chunking strategy.
+5. Preserve source traceability.
+6. Store the resulting text representation in an appropriate searchable/indexed form.
+7. Implement a basic/native retrieval path.
+8. Convert retrieved results into the common `Evidence[]` format.
+9. Test the representation using representative questions.
+10. Document important design decisions and limitations.
 
-affect retrieval quality.
-
-## Required Pipeline
+A useful conceptual representation is:
 
 ```text
-NovaMart Handbook
-        ↓
-Text Extraction
-        ↓
-Cleaning
-        ↓
-Chunking
-        ↓
-Storage / Index
-        ↓
-Retrieval
-        ↓
+Source document
+      ↓
+Clean text
+      ↓
+Chunks
+      ↓
+Searchable/indexed storage
+      ↓
+Basic retrieval
+      ↓
 Evidence[]
 ```
 
-## Storage / Index Responsibility
+The pair should investigate reasonable chunking choices rather than assuming one chunk size is automatically correct.
 
-The pair MUST create and use an actual searchable storage/index for its chunks.
+They may compare a small number of chunking configurations to understand how chunk boundaries affect retrieval readiness.
 
-The pair should research suitable options and select an approach appropriate for the project.
+## Main research question
 
-Possible approaches may include:
+> How does chunking affect the ability of a text representation to preserve and retrieve useful evidence?
 
-* keyword-based indexing
-* vector storage
-* a local vector database
-* another suitable searchable index
+## Do not implement
 
-The pair must **justify the technology chosen**.
+Pair 1 should not independently build:
 
-Do not select a technology simply because it is popular.
+* the complete vector retrieval framework
+* the complete hybrid retrieval framework
+* the common evaluation framework
+* the final application
+* the cross-representation comparison
 
-The choice should consider:
-
-* ease of local setup
-* suitability for chunk retrieval
-* metadata/source traceability
-* retrieval performance
-* integration with the common interface
-
-## Required Retrieval
-
-The implementation must retrieve relevant chunks from the team's storage/index.
-
-It must not simply search a Python list or return hardcoded answers.
-
-The retrieval implementation must return:
-
-```text
-Evidence[]
-```
-
-## Experiments
-
-At minimum, compare 2–3 chunking configurations.
-
-For example:
-
-```text
-Configuration A
-Configuration B
-Configuration C
-```
-
-Measure how the configurations affect:
-
-* retrieval relevance
-* source coverage
-* retrieval latency
-* failure cases
-
-## Main Question
-
-> How does chunking affect what evidence a RAG system retrieves?
-
-## Deliverables
-
-The pair should provide:
-
-* representation implementation
-* storage/index creation
-* retrieval implementation
-* tests
-* experiment results
-* README
-* example queries
-* retrieval statistics
-* latency measurements where practical
-* failure analysis
-* limitations
+Those belong to Phase 2/shared work.
 
 ---
 
@@ -301,111 +248,86 @@ The pair should provide:
 
 ## Ownership
 
+Folder:
+
 ```text
 representations/text_metadata/
 ```
 
-## Objective
+Pair 2 owns a representation where textual knowledge is accompanied by useful metadata.
 
-Represent NovaMart knowledge as searchable text units enriched with meaningful metadata.
-
-Example metadata may include:
+Possible source-supported metadata may include:
 
 * policy area
 * customer tier
 * region
 * product category
-* effective date
-* expiration date
+* effective dates
 * promotion
 * seller type
+* policy/version information
 
-Only metadata supported by the source dataset should be used.
+Metadata must come from the NovaMart source.
 
-## Required Pipeline
+**Do not invent metadata simply to make retrieval easier.**
 
-```text
-NovaMart Handbook
-        ↓
-Text Extraction
-        ↓
-Chunk / Text Unit Creation
-        ↓
-Metadata Attachment
-        ↓
-Storage / Index
-        ↓
-Metadata Filtering + Retrieval
-        ↓
-Evidence[]
-```
+## Responsibilities
 
-## Storage / Index Responsibility
+The pair should:
 
-The pair MUST create a searchable storage/index that supports the text and its metadata.
-
-The chosen technology should support the team's experiment with:
-
-```text
-Semantic Retrieval
-        vs
-Semantic Retrieval + Metadata Constraints
-```
-
-The pair must research and select an appropriate storage/index technology.
-
-The technology choice must be documented and justified.
-
-## Required Retrieval
-
-The pair should support retrieval with metadata constraints where appropriate.
+1. Understand the source.
+2. Identify useful metadata that is explicitly supported by the source.
+3. Design the text + metadata representation.
+4. Decide how text and metadata should be stored/indexed.
+5. Populate the representation.
+6. Implement a basic/native retrieval or filtering path.
+7. Return retrieved results through `Evidence[]`.
+8. Test representative queries.
+9. Document why particular metadata fields were selected.
+10. Document limitations.
 
 Conceptually:
 
 ```text
-Query
- ↓
-Semantic Search
- ↓
-Candidate Evidence
+Source
+   ↓
+Text unit
+   +
+Metadata
+   ↓
+Storage / Index
+   ↓
+Basic retrieval / filtering
+   ↓
+Evidence[]
 ```
 
-and:
+## Main research question
+
+> Can metadata-rich representation preserve constraints and context that plain text alone may not make explicit?
+
+## Important distinction
+
+Metadata representation and metadata retrieval are different things.
+
+For example:
 
 ```text
-Query + Metadata Constraint
- ↓
-Filtered Search
- ↓
-Candidate Evidence
+Text + region + customer tier
 ```
 
-The comparison should show whether metadata constraints help retrieve the correct evidence.
+is the **representation**.
 
-## Important Rule
+Using:
 
-Do not invent metadata.
+```text
+region = "India"
+customer_tier = "Premium"
+```
 
-If the source does not support a metadata value, do not manufacture one simply to improve retrieval.
+to restrict retrieval is a **retrieval strategy**.
 
-## Main Question
-
-> Can metadata constraints improve retrieval when semantic similarity alone is insufficient?
-
-## Deliverables
-
-The pair should provide:
-
-* text + metadata representation
-* storage/index creation
-* metadata filtering capability
-* retrieval implementation
-* tests
-* experiment results
-* README
-* example queries
-* failure cases
-* limitations
+The pair should implement only the basic/native path necessary to prove its representation works. More advanced metadata retrieval experiments belong to Phase 2.
 
 ---
 
@@ -413,20 +335,22 @@ The pair should provide:
 
 ## Ownership
 
+Folder:
+
 ```text
 representations/structured_table/
 ```
 
-## Objective
+Pair 3 owns the structured representation of the NovaMart knowledge.
 
-Represent NovaMart knowledge as structured entities, attributes, and relationships.
+PostgreSQL is the preferred database unless there is a documented technical reason to use another solution.
 
-The team should identify natural entities such as:
+## Candidate entities
+
+The pair should investigate natural entities such as:
 
 * Customer
-* Tier
 * Product
-* Category
 * Manufacturer
 * Seller
 * Policy
@@ -435,98 +359,53 @@ The team should identify natural entities such as:
 * Support Case
 * Order
 
-The exact schema should be justified from the source data.
+The final schema should be based on the actual NovaMart source.
 
-## Required Pipeline
+## Responsibilities
+
+The pair should:
+
+1. Identify naturally structured entities.
+2. Identify attributes.
+3. Identify relationships.
+4. Design the relational schema.
+5. Create the database tables.
+6. Load the source-supported data.
+7. Preserve stable source identifiers.
+8. Create representative SQL retrieval queries.
+9. Convert retrieved information into `Evidence[]`.
+10. Test the representation.
+11. Document schema and design decisions.
+
+Conceptually:
 
 ```text
-NovaMart Source Data
-        ↓
-Entity Identification
-        ↓
-Relational Schema
-        ↓
-SQL Database
-        ↓
-SQL / Structured Retrieval
-        ↓
+NovaMart source
+      ↓
+Entities + relationships
+      ↓
+Relational schema
+      ↓
+PostgreSQL
+      ↓
+Basic SQL retrieval
+      ↓
 Evidence[]
 ```
 
-## Storage Responsibility
+## Main research question
 
-The pair MUST create an actual SQL database.
+> Which types of NovaMart knowledge are naturally represented and queried as structured entities and relationships?
 
-**PostgreSQL is the preferred database for this project.**
+## Important restriction
 
-The database should contain:
+Do not turn every sentence in the handbook into an arbitrary database row.
 
-* appropriate tables
-* primary keys
-* foreign keys
-* relevant constraints
-* relationships between entities
+The objective is to identify knowledge that naturally benefits from structured representation.
 
-The pair must provide a schema file such as:
+Do not hardcode answers directly into SQL queries.
 
-```text
-schema.sql
-```
-
-The database must be populated from the NovaMart source data.
-
-Do not simply create an SQL file containing hardcoded answers.
-
-## Retrieval Responsibility
-
-The pair should retrieve information using structured queries.
-
-Depending on the question, this may involve:
-
-* SELECT
-* WHERE
-* JOIN
-* aggregation
-* filtering
-* relationship traversal
-* other appropriate SQL operations
-
-The retrieved information must ultimately be converted into:
-
-```text
-Evidence[]
-```
-
-## Main Question
-
-> Which questions become easier, clearer, or more reliable when knowledge is represented as structured entities and relationships?
-
-## Example Question Types
-
-The team should investigate questions involving:
-
-* exact values
-* entity relationships
-* filtering
-* aggregation
-* multiple related entities
-
-## Deliverables
-
-The pair should provide:
-
-* relational schema
-* `schema.sql`
-* database setup instructions
-* data-loading process
-* structured retrieval implementation
-* Evidence conversion
-* tests
-* example queries
-* experiment results
-* README
-* limitations
-* failure analysis
+The database should contain the knowledge; queries should retrieve it.
 
 ---
 
@@ -534,19 +413,17 @@ The pair should provide:
 
 ## Ownership
 
+Folder:
+
 ```text
 representations/knowledge_graph/
 ```
 
-## Objective
+Pair 4 owns the graph representation of NovaMart knowledge.
 
-Represent NovaMart knowledge as entities connected through explicit relationships.
+## Candidate entities
 
-The graph should focus particularly on questions where relationships and multi-hop reasoning matter.
-
-## Required Entities
-
-The team should consider entities such as:
+Examples include:
 
 * Customer
 * Tier
@@ -561,315 +438,342 @@ The team should consider entities such as:
 * Support Case
 * Escalation Level
 
-## Required Relationships
+## Candidate relationships
 
-The team should consider source-supported relationships such as:
+Examples:
 
 ```text
-Customer ──HAS_TIER──────> Tier
+Customer ──HAS_TIER──> Tier
 
-Customer ──PLACED────────> Order
+Customer ──PLACED──> Order
 
-Order ──CONTAINS─────────> Product
+Order ──CONTAINS──> Product
 
-Product ──MANUFACTURED_BY> Manufacturer
+Product ──MANUFACTURED_BY──> Manufacturer
 
-Product ──PART_OF────────> Category
+Product ──PART_OF──> Category
 
 Product ──QUALIFIES_FOR──> Promotion
 
-Promotion ──USES─────────> Policy
+Promotion ──USES──> Policy
 
-Policy ──APPLIES_TO──────> Region
+Policy ──APPLIES_TO──> Region
 ```
 
-Only relationships supported by the NovaMart source should be created.
-
-## Required Pipeline
-
-```text
-NovaMart Source Data
-        ↓
-Entity Extraction
-        ↓
-Node + Relationship Creation
-        ↓
-Graph Database / Graph Store
-        ↓
-Graph Retrieval / Traversal
-        ↓
-Evidence[]
-```
-
-## Storage Responsibility
-
-The pair MUST create an actual graph-based storage/index.
-
-The team should research appropriate graph technologies and choose one suitable for the project.
-
-The technology choice must be justified.
-
-The graph should contain real nodes and relationships derived from the NovaMart dataset.
-
-Do not create a graph containing only a few manually entered examples.
-
-## Retrieval Responsibility
-
-The team should investigate retrieval based on graph structure.
-
-Particular attention should be given to:
-
-* one-hop relationships
-* two-hop relationships
-* multi-hop relationships
-* relationship filtering
-* connected entities
-
-The retrieval implementation must return:
-
-```text
-Evidence[]
-```
-
-with source traceability.
-
-## Main Question
-
-> Can graph structure improve retrieval for relationship-heavy and multi-hop questions?
-
-## Deliverables
-
-The pair should provide:
-
-* graph schema/model
-* graph database/store setup
-* data-loading process
-* node/relationship creation
-* graph retrieval implementation
-* Evidence conversion
-* tests
-* example queries
-* multi-hop experiments
-* failure analysis
-* README
-* limitations
-
----
-
-# 9. Storage Technology Is Part of the Experiment
-
-The database or index is not an afterthought.
-
-Each pair should be able to explain:
-
-> Why is this storage/index appropriate for this representation?
-
-For example:
-
-```text
-Representation
-      ↓
-Why this representation?
-      ↓
-Why this storage?
-      ↓
-Why this retrieval method?
-      ↓
-What evidence does it retrieve?
-```
-
-The project is therefore comparing not only data formats, but complete retrieval pipelines.
-
----
-
-# 10. Technology Selection Rules
-
-Teams are encouraged to research and choose appropriate technologies.
-
-However:
-
-* do not introduce unnecessary infrastructure
-* prefer locally reproducible solutions
-* document installation/setup requirements
-* avoid paid services unless explicitly approved
-* do not require cloud infrastructure for the basic demo
-* do not create a separate application
-* do not create a separate dataset
-* do not modify shared interfaces without approval
-
-If a technology introduces a significant new dependency, discuss it with the project lead before adopting it.
-
----
-
-# 11. Representation vs Retrieval
-
-Teams must keep these concepts separate.
-
-### Representation
-
-How is the knowledge organized?
-
-Examples:
-
-```text
-Chunks
-Chunks + Metadata
-Tables
-Nodes + Relationships
-```
-
-### Storage / Index
-
-Where and how is that representation made searchable?
-
-Examples:
-
-```text
-Text index
-Vector index
-Vector store
-SQL database
-Graph database
-```
-
-### Retrieval
-
-How do we find relevant evidence?
-
-Examples:
-
-```text
-Keyword search
-Semantic search
-Metadata filtering
-SQL query
-Graph traversal
-Hybrid retrieval
-```
-
-A pair must be able to explain all three.
-
----
-
-# 12. Prohibited Actions
-
-Teams must NOT:
-
-* create a separate dataset
-* create a separate benchmark
-* hardcode answers
-* manually return answers instead of retrieving evidence
-* invent relationships
-* invent metadata
-* modify the common Evidence contract without approval
-* modify shared interfaces without approval
-* build a completely separate application
-* ignore source traceability
-* optimize only for one example query
-* claim retrieval quality without testing
-* add unnecessary infrastructure
-
----
-
-# 13. Experiment Mindset
-
-The goal is not:
-
-> "Our implementation works."
-
-The goal is:
-
-> "We can demonstrate what this representation and retrieval approach does well, where it fails, and why."
-
-Every pair should therefore include examples of:
-
-### Successful retrieval
-
-```text
-Query
-↓
-Retrieved evidence
-↓
-Why it is relevant
-```
-
-### Failed retrieval
-
-```text
-Query
-↓
-Retrieved evidence
-↓
-What went wrong
-↓
-Why it happened
-```
-
-### Comparison
-
-Where applicable:
-
-```text
-Approach A
-vs
-Approach B
-```
-
-The comparison should be based on observed results rather than assumptions.
-
----
-
-# 14. Definition of Done
-
-A pair is complete only when all of the following are true:
-
-* [ ] Source dataset understood
-* [ ] Representation designed
-* [ ] Representation implemented
-* [ ] Appropriate storage/index selected
-* [ ] Storage/index created and populated
-* [ ] Retrieval implemented
-* [ ] Common interface respected
-* [ ] Evidence[] returned
-* [ ] Source traceability preserved
-* [ ] Tests written
-* [ ] Example queries tested
-* [ ] Retrieval behavior measured
-* [ ] At least some failure cases documented
-* [ ] Technology choices explained
-* [ ] README completed
-* [ ] No hardcoded answers
-* [ ] No separate dataset
-* [ ] No unauthorized shared-interface changes
-* [ ] Code committed to the team's feature branch
-* [ ] Pull request ready for review
-
----
-
-# 15. Final Goal
-
-At the end of the project, the integrated system should allow the same NovaMart question to be evaluated through different knowledge representations and retrieval approaches.
+The final graph must be based on relationships supported by the NovaMart source.
+
+## Responsibilities
+
+The pair should:
+
+1. Identify entities.
+2. Identify relationships.
+3. Design the graph model.
+4. Choose an appropriate graph storage solution.
+5. Populate the graph.
+6. Preserve source identifiers.
+7. Implement basic/native graph traversal retrieval.
+8. Return retrieved evidence through `Evidence[]`.
+9. Test one-hop, two-hop, and where appropriate multi-hop questions.
+10. Document the graph design and limitations.
 
 Conceptually:
 
 ```text
-                    ┌── Text ────────────────┐
-                    │                         │
-NovaMart Data ──────┼── Text + Metadata ──────┤
-                    │                         │
-                    ├── Structured Data ──────┤
-                    │                         │
-                    └── Knowledge Graph ──────┘
-                              ↓
-                         Retrieval
-                              ↓
-                         Evidence[]
-                              ↓
-                         Evaluation
-                              ↓
-                    Compare Retrieval Behavior
+NovaMart source
+      ↓
+Nodes + relationships
+      ↓
+Graph storage
+      ↓
+Basic graph traversal
+      ↓
+Evidence[]
 ```
 
-The final demonstration should make one idea clear:
+## Main research question
 
-> **The way knowledge is represented and stored affects what evidence can be retrieved, and the quality of retrieved evidence affects the quality of a RAG system's answer.**
+> Can graph structure preserve relationship-heavy knowledge that may be difficult to retrieve from flat text?
+
+## Important restriction
+
+Do not invent relationships.
+
+Do not hardcode the answer to a question into the graph or traversal query.
+
+The graph must represent actual knowledge from the NovaMart source.
+
+---
+
+# 9. Common Evidence Contract
+
+All four pairs must eventually return evidence in the same conceptual format.
+
+```python
+@dataclass
+class Evidence:
+    content: str
+    source_id: str
+    score: float
+    metadata: dict[str, Any]
+```
+
+The purpose is to make the four representations interchangeable from the perspective of the rest of the system.
+
+The integration layer should be able to receive:
+
+```text
+Evidence[]
+```
+
+without needing to know how that evidence was originally stored.
+
+Each result must preserve source traceability wherever possible.
+
+---
+
+# 10. Evaluation Ownership
+
+Evaluation is a **shared responsibility**, not four independent pair projects.
+
+The common evaluation layer lives under:
+
+```text
+evaluation/
+```
+
+The project will evaluate retrieval primarily at the evidence level before judging the final LLM answer.
+
+Conceptually:
+
+```text
+Question
+   ↓
+Expected evidence
+   ↓
+Retrieved Evidence[]
+   ↓
+Retrieval evaluation
+   ↓
+Evidence sufficiency
+   ↓
+LLM answer
+   ↓
+Answer evaluation
+```
+
+Possible retrieval metrics include:
+
+* Precision@K
+* Recall@K
+* MRR
+* nDCG@K where applicable
+* retrieval latency
+
+The evaluation should also examine:
+
+* source traceability
+* whether required evidence was retrieved
+* whether evidence was sufficient
+* failure cases
+* incorrect near-matches
+* temporal/version mistakes
+* ignored exceptions
+* missing multi-hop evidence
+* irrelevant evidence overload
+
+Pairs may create **local tests** for their own representation, but they should not create separate competing evaluation frameworks.
+
+---
+
+# 11. Same Benchmark
+
+All representations use the same NovaMart evaluation questions.
+
+The benchmark is already provided under:
+
+```text
+data/queries/
+```
+
+Teams must not create their own independent benchmark as a replacement.
+
+This is important because the final comparison must be fair.
+
+The question should remain the same while the representation and/or retrieval method changes.
+
+For example:
+
+```text
+Question Q001
+   ↓
+Text representation
+   ↓
+Evidence A
+
+Question Q001
+   ↓
+Text + Metadata representation
+   ↓
+Evidence B
+
+Question Q001
+   ↓
+Structured representation
+   ↓
+Evidence C
+
+Question Q001
+   ↓
+Graph representation
+   ↓
+Evidence D
+```
+
+The common evaluator can then compare the evidence.
+
+---
+
+# 12. Phase 1 vs Phase 2
+
+This distinction is mandatory.
+
+## Phase 1 — Pair-owned
+
+```text
+Source
+ ↓
+Representation
+ ↓
+Storage
+ ↓
+Basic / Native Retrieval
+ ↓
+Evidence[]
+```
+
+Each pair owns this part.
+
+## Phase 2 — Lead/shared
+
+```text
+Same Query
+ ↓
+Applicable Representation
+ +
+Applicable Retrieval Strategy
+ ↓
+Evidence[]
+ ↓
+Common Evaluation
+ ↓
+Comparison
+```
+
+The lead/shared layer owns the cross-representation experiments.
+
+---
+
+# 13. What Teams Must NOT Do
+
+Without discussion with the lead, teams should not:
+
+* modify `shared/schemas.py`
+* modify `shared/interfaces.py`
+* redesign the common Evidence contract
+* modify the benchmark
+* replace the NovaMart dataset
+* create a separate dataset
+* create a separate application
+* create a separate evaluation framework
+* implement unrelated retrieval systems
+* hardcode answers
+* invent source knowledge
+* add dependencies without discussion
+* modify another pair's representation
+* redesign the overall architecture
+
+If a team discovers that a shared interface genuinely needs to change, raise the issue before modifying it.
+
+
+
+Shared areas include:
+
+```text
+shared/
+data/
+evaluation/
+app/
+docs/architecture.md
+```
+
+## Pair Ownership
+
+Each pair owns only its representation folder:
+
+```text
+Pair 1 → representations/text/
+Pair 2 → representations/text_metadata/
+Pair 3 → representations/structured_table/
+Pair 4 → representations/knowledge_graph/
+```
+
+Teams may add supporting tests and documentation within their ownership area.
+
+---
+
+# 15. Definition of Done — Phase 1
+
+A pair is considered complete when:
+
+* [ ] Source understanding is documented.
+* [ ] Representation design is documented.
+* [ ] Representation is implemented.
+* [ ] Appropriate storage/index is created.
+* [ ] Source data is loaded correctly.
+* [ ] Source identifiers are preserved.
+* [ ] Basic/native retrieval works.
+* [ ] Retrieval returns the common `Evidence[]` structure.
+* [ ] Representative queries have been tested.
+* [ ] At least some failure/limitation cases are documented.
+* [ ] No unsupported knowledge has been invented.
+* [ ] Code is contained within the team's ownership boundary.
+* [ ] Documentation explains important technical decisions.
+* [ ] Changes are committed to the team's branch.
+* [ ] Pull request is ready for integration review.
+
+---
+
+# 16. Final Project Goal
+
+The final project should allow us to demonstrate something more meaningful than:
+
+> "Here are four different RAG implementations."
+
+Instead, we want to demonstrate:
+
+```text
+Knowledge Representation
+          ×
+Retrieval Strategy
+          ↓
+Retrieved Evidence
+          ↓
+LLM Answer
+          ↓
+Evaluation
+```
+
+The same question can produce different evidence depending on how the underlying knowledge is represented and how that representation is searched.
+
+That difference is the core subject of this project.
+
+---
+
+# 17. Golden Rule
+
+> **Each pair owns its representation from Source → Representation → Storage → Basic/Native Retrieval → Evidence[].**
+
+> **Advanced retrieval experimentation, cross-representation comparison, common evaluation, integration, and the final application belong to the shared Phase 2.**
+
+This boundary keeps the project integrated while giving every pair genuine ownership of a technically meaningful component.
