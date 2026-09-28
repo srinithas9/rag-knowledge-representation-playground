@@ -10,32 +10,36 @@ The core research question is:
 
 > **How does the combination of knowledge representation and retrieval strategy affect the evidence retrieved for the same question, and how does that evidence affect the final RAG answer?**
 
-The project is therefore not four independent RAG applications.
+The project is therefore **not four independent RAG applications**.
 
-It is one system with multiple representation approaches that can later be compared under a common retrieval and evaluation framework.
+It is one integrated system with multiple representation approaches that can later be compared under a common retrieval and evaluation framework.
 
 ---
 
 # 2. Overall Architecture
 
-The project follows this pipeline:
+The complete project follows this conceptual pipeline:
 
 ```text
 Same NovaMart Source
+        ↓
+Parse / Normalize
         ↓
 Knowledge Representation
         ↓
 Storage / Index
         ↓
+User Query
+        ↓
 Retrieval
         ↓
-Relevant Evidence
-        ↓
-LLM
-        ↓
-Answer
-        ↓
-Evaluation
+Evidence[]
+       ↙   ↘
+Evaluation  LLM
+              ↓
+            Answer
+              ↓
+       Answer Evaluation
 ```
 
 The four representation approaches are:
@@ -45,57 +49,122 @@ The four representation approaches are:
 3. **Structured Data**
 4. **Knowledge Graph**
 
-The important distinction is:
+The four representations are **parallel alternatives** created from the same source.
 
 ```text
-Representation ≠ Storage ≠ Retrieval
+                         Common Source
+                              │
+              ┌───────────────┼───────────────┐
+              │               │               │
+              ▼               ▼               ▼
+            Text        Text + Metadata   Structured
+              │               │               │
+              └───────────────┼───────────────┘
+                              │
+                         Knowledge Graph
+```
+
+Conceptually, the graph should also be understood as an independent representation derived from the same source, not as something that must be built downstream from another team's representation.
+
+---
+
+# 3. Representation vs Storage vs Retrieval
+
+The most important architectural distinction is:
+
+```text
+Representation ≠ Storage / Index ≠ Retrieval
+```
+
+### Representation
+
+How knowledge is organized.
+
+Examples:
+
+```text
+Text
+Text + Metadata
+Structured Tables
+Knowledge Graph
+```
+
+### Storage / Index
+
+Where or how the representation is persisted and made searchable.
+
+Examples:
+
+```text
+Text index
+Vector store
+PostgreSQL
+Graph database
+```
+
+### Retrieval
+
+How relevant information is found.
+
+Examples:
+
+```text
+Keyword
+Semantic / Vector
+Hybrid
+Metadata Filtering
+SQL
+Graph Traversal
+Reranking
 ```
 
 For example:
 
 ```text
-Text
-  ↓
-Chunked representation
-  ↓
-Search/index/vector store
-  ↓
-Keyword / semantic / hybrid retrieval
+Text Representation
+        ↓
+Storage / Index
+        ↓
+Semantic Retrieval
+        ↓
+Evidence[]
 ```
 
 Similarly:
 
 ```text
-Structured knowledge
-  ↓
-Tables/entities
-  ↓
-SQL database
-  ↓
-SQL retrieval
+Structured Representation
+        ↓
+PostgreSQL
+        ↓
+SQL Retrieval
+        ↓
+Evidence[]
 ```
 
 And:
 
 ```text
-Graph knowledge
-  ↓
-Nodes + relationships
-  ↓
-Graph database
-  ↓
-Graph traversal
+Graph Representation
+        ↓
+Graph Store
+        ↓
+Graph Traversal
+        ↓
+Evidence[]
 ```
+
+A vector database, therefore, should not be described as the representation itself.
 
 ---
 
-# 3. Team Responsibility Model
+# 4. Team Responsibility Model
 
 The project is divided into two major phases.
 
 ## Phase 1 — Representation Ownership
 
-Each pair owns its assigned representation end-to-end **only to the point required to make that representation usable and queryable**.
+Each pair owns its assigned representation **end-to-end to the point required to make that representation usable, queryable, and capable of returning evidence**.
 
 Every pair is responsible for:
 
@@ -104,7 +173,7 @@ SOURCE
   ↓
 REPRESENT
   ↓
-STORE
+STORE / INDEX
   ↓
 BASIC / NATIVE RETRIEVAL
   ↓
@@ -113,60 +182,138 @@ Evidence[]
 
 This means each pair must understand:
 
-* the source knowledge relevant to its representation
-* how the knowledge should be represented
-* how that representation should be stored
-* how it can be queried
-* how retrieved results can be converted into the common `Evidence[]` format
+* the source knowledge relevant to its representation,
+* how the knowledge should be represented,
+* how that representation should be stored,
+* how it can be queried,
+* how retrieved results can be converted into the common `Evidence[]` format,
+* what kinds of questions the representation handles well,
+* where the representation or basic retrieval fails.
 
 ### Phase 1 does NOT mean:
 
-* implementing every retrieval technique
-* building the final RAG application
-* creating a separate evaluation framework
-* creating a separate benchmark
-* comparing all four representations
-* implementing every possible representation × retrieval combination
-* changing shared interfaces without approval
+* implementing every retrieval technique,
+* building the final RAG application,
+* creating a separate evaluation framework,
+* creating a separate benchmark,
+* comparing all four representations,
+* implementing every possible representation × retrieval combination,
+* changing shared interfaces without approval.
 
 ---
 
-# 4. Phase 2 — Shared Retrieval & Evaluation
+# 5. How Phase 1 Is Tested
 
-After the four representations are usable, the project moves into a shared experimentation phase.
+The main Phase 1 output is **retrieved evidence**, not the final LLM answer.
 
-The lead/shared layer will investigate applicable retrieval strategies across the representations.
+The testing flow is:
+
+```text
+Source
+   ↓
+Representation
+   ↓
+Storage / Index
+   ↓
+Question
+   ↓
+Basic / Native Retrieval
+   ↓
+Top-K Evidence
+   ↓
+Compare with Ground Truth
+```
+
+For example:
+
+```text
+Question:
+"What is the refund period for a Premium customer in India?"
+
+        ↓
+
+Basic / Native Retriever
+
+        ↓
+
+Top-K Evidence
+
+        ↓
+
+Inspect:
+- Was the correct policy retrieved?
+- Was it ranked appropriately?
+- Is the evidence complete?
+- Can it be traced to the source?
+- Was the wrong policy version retrieved?
+- Was an exception missed?
+```
+
+Each pair should demonstrate that its representation can actually retrieve meaningful evidence.
+
+### Important: LLM is not required for Phase 1
+
+Do **not** depend on an LLM to prove that the representation works.
+
+The important Phase 1 question is:
+
+> **Can our representation retrieve the right evidence?**
+
+The LLM comes downstream:
+
+```text
+Question
+   ↓
+Retrieval
+   ↓
+Evidence[]
+   ↓
+LLM
+   ↓
+Answer
+```
+
+This separation is important because a strong LLM can sometimes produce a plausible answer even when the retrieved evidence is incorrect or incomplete.
+
+---
+
+# 6. Phase 2 — Shared Retrieval & Evaluation
+
+After the four representations are usable, the project moves into shared experimentation.
+
+The shared layer investigates applicable retrieval strategies across the representations.
 
 Conceptually:
 
 ```text
 Same Query
     ↓
-Representation A + Retrieval Strategy
-Representation B + Retrieval Strategy
-Representation C + Retrieval Strategy
-Representation D + Retrieval Strategy
+Representation
+    +
+Applicable Retrieval Strategy
     ↓
 Evidence[]
     ↓
 Common Evaluation
     ↓
 Comparison
+    ↓
+LLM
+    ↓
+Answer
 ```
 
 Possible retrieval strategies include:
 
-* keyword retrieval
-* semantic/vector retrieval
-* hybrid retrieval
-* metadata filtering
-* reranking
-* SQL retrieval
-* graph traversal
+* Keyword retrieval
+* Semantic / Vector retrieval
+* Hybrid retrieval
+* Metadata filtering
+* Reranking
+* SQL / Structured retrieval
+* Graph traversal
 
 Not every retrieval strategy must apply to every representation.
-
-For example:
 
 | Representation  | Applicable retrieval examples                            |
 | --------------- | -------------------------------------------------------- |
@@ -175,11 +322,11 @@ For example:
 | Structured      | SQL / structured retrieval                               |
 | Knowledge Graph | Graph traversal / graph retrieval                        |
 
-The goal is to compare **meaningful combinations**, not to force every technique onto every representation.
+The goal is to compare **meaningful combinations**, not force every technique onto every representation.
 
 ---
 
-# 5. Pair 1 — Text / Chunked Text
+# 7. Pair 1 — Text / Chunked Text
 
 ## Ownership
 
@@ -206,18 +353,18 @@ The pair should:
 9. Test the representation using representative questions.
 10. Document important design decisions and limitations.
 
-A useful conceptual representation is:
+Conceptually:
 
 ```text
-Source document
+Source Document
       ↓
-Clean text
+Clean Text
       ↓
 Chunks
       ↓
-Searchable/indexed storage
+Searchable / Indexed Storage
       ↓
-Basic retrieval
+Basic Retrieval
       ↓
 Evidence[]
 ```
@@ -228,23 +375,23 @@ They may compare a small number of chunking configurations to understand how chu
 
 ## Main research question
 
-> How does chunking affect the ability of a text representation to preserve and retrieve useful evidence?
+> **How does chunking affect the ability of a text representation to preserve and retrieve useful evidence?**
 
-## Do not implement
+## Do not implement independently
 
 Pair 1 should not independently build:
 
-* the complete vector retrieval framework
-* the complete hybrid retrieval framework
-* the common evaluation framework
-* the final application
-* the cross-representation comparison
+* the complete vector retrieval framework,
+* the complete hybrid retrieval framework,
+* the common evaluation framework,
+* the final application,
+* the cross-representation comparison.
 
 Those belong to Phase 2/shared work.
 
 ---
 
-# 6. Pair 2 — Text + Metadata
+# 8. Pair 2 — Text + Metadata
 
 ## Ownership
 
@@ -258,25 +405,25 @@ Pair 2 owns a representation where textual knowledge is accompanied by useful me
 
 Possible source-supported metadata may include:
 
-* policy area
-* customer tier
-* region
-* product category
-* effective dates
-* promotion
-* seller type
-* policy/version information
+* policy area,
+* customer tier,
+* region,
+* product category,
+* effective dates,
+* promotion,
+* seller type,
+* policy/version information.
 
 Metadata must come from the NovaMart source.
 
-**Do not invent metadata simply to make retrieval easier.**
+> **Do not invent metadata simply to make retrieval easier.**
 
 ## Responsibilities
 
 The pair should:
 
 1. Understand the source.
-2. Identify useful metadata that is explicitly supported by the source.
+2. Identify useful metadata explicitly supported by the source.
 3. Design the text + metadata representation.
 4. Decide how text and metadata should be stored/indexed.
 5. Populate the representation.
@@ -291,20 +438,20 @@ Conceptually:
 ```text
 Source
    ↓
-Text unit
+Text Unit
    +
 Metadata
    ↓
 Storage / Index
    ↓
-Basic retrieval / filtering
+Basic Retrieval / Filtering
    ↓
 Evidence[]
 ```
 
 ## Main research question
 
-> Can metadata-rich representation preserve constraints and context that plain text alone may not make explicit?
+> **Can metadata-rich representation preserve constraints and context that plain text alone may not make explicit?**
 
 ## Important distinction
 
@@ -331,7 +478,7 @@ The pair should implement only the basic/native path necessary to prove its repr
 
 ---
 
-# 7. Pair 3 — Structured Data
+# 9. Pair 3 — Structured Data
 
 ## Ownership
 
@@ -370,7 +517,7 @@ The pair should:
 3. Identify relationships.
 4. Design the relational schema.
 5. Create the database tables.
-6. Load the source-supported data.
+6. Load source-supported data.
 7. Preserve stable source identifiers.
 8. Create representative SQL retrieval queries.
 9. Convert retrieved information into `Evidence[]`.
@@ -380,22 +527,22 @@ The pair should:
 Conceptually:
 
 ```text
-NovaMart source
+NovaMart Source
       ↓
-Entities + relationships
+Entities + Relationships
       ↓
-Relational schema
+Relational Schema
       ↓
 PostgreSQL
       ↓
-Basic SQL retrieval
+Basic SQL Retrieval
       ↓
 Evidence[]
 ```
 
 ## Main research question
 
-> Which types of NovaMart knowledge are naturally represented and queried as structured entities and relationships?
+> **Which types of NovaMart knowledge are naturally represented and queried as structured entities and relationships?**
 
 ## Important restriction
 
@@ -409,7 +556,7 @@ The database should contain the knowledge; queries should retrieve it.
 
 ---
 
-# 8. Pair 4 — Knowledge Graph
+# 10. Pair 4 — Knowledge Graph
 
 ## Ownership
 
@@ -443,21 +590,21 @@ Examples include:
 Examples:
 
 ```text
-Customer ──HAS_TIER──> Tier
+Customer ──HAS_TIER──────> Tier
 
-Customer ──PLACED──> Order
+Customer ──PLACED────────> Order
 
-Order ──CONTAINS──> Product
+Order ──CONTAINS─────────> Product
 
-Product ──MANUFACTURED_BY──> Manufacturer
+Product ──MANUFACTURED_BY> Manufacturer
 
-Product ──PART_OF──> Category
+Product ──PART_OF────────> Category
 
 Product ──QUALIFIES_FOR──> Promotion
 
-Promotion ──USES──> Policy
+Promotion ──USES─────────> Policy
 
-Policy ──APPLIES_TO──> Region
+Policy ──APPLIES_TO──────> Region
 ```
 
 The final graph must be based on relationships supported by the NovaMart source.
@@ -480,20 +627,20 @@ The pair should:
 Conceptually:
 
 ```text
-NovaMart source
+NovaMart Source
       ↓
-Nodes + relationships
+Nodes + Relationships
       ↓
-Graph storage
+Graph Storage
       ↓
-Basic graph traversal
+Basic Graph Traversal
       ↓
 Evidence[]
 ```
 
 ## Main research question
 
-> Can graph structure preserve relationship-heavy knowledge that may be difficult to retrieve from flat text?
+> **Can graph structure preserve relationship-heavy knowledge that may be difficult to retrieve from flat text?**
 
 ## Important restriction
 
@@ -505,9 +652,9 @@ The graph must represent actual knowledge from the NovaMart source.
 
 ---
 
-# 9. Common Evidence Contract
+# 11. Common Evidence Contract
 
-All four pairs must eventually return evidence in the same conceptual format.
+All four pairs must return evidence in the same conceptual format.
 
 ```python
 @dataclass
@@ -532,7 +679,7 @@ Each result must preserve source traceability wherever possible.
 
 ---
 
-# 10. Evaluation Ownership
+# 12. Evaluation Ownership
 
 Evaluation is a **shared responsibility**, not four independent pair projects.
 
@@ -542,24 +689,26 @@ The common evaluation layer lives under:
 evaluation/
 ```
 
-The project will evaluate retrieval primarily at the evidence level before judging the final LLM answer.
+The project evaluates retrieval primarily at the evidence level before judging the final LLM answer.
 
 Conceptually:
 
 ```text
 Question
    ↓
-Expected evidence
+Expected Evidence / Source IDs
    ↓
 Retrieved Evidence[]
    ↓
-Retrieval evaluation
+Retrieval Evaluation
    ↓
-Evidence sufficiency
+Evidence Sufficiency
    ↓
-LLM answer
+LLM
    ↓
-Answer evaluation
+Answer
+   ↓
+Answer Evaluation
 ```
 
 Possible retrieval metrics include:
@@ -568,29 +717,29 @@ Possible retrieval metrics include:
 * Recall@K
 * MRR
 * nDCG@K where applicable
-* retrieval latency
+* Retrieval latency
 
 The evaluation should also examine:
 
-* source traceability
-* whether required evidence was retrieved
-* whether evidence was sufficient
-* failure cases
-* incorrect near-matches
-* temporal/version mistakes
-* ignored exceptions
-* missing multi-hop evidence
-* irrelevant evidence overload
+* source traceability,
+* whether required evidence was retrieved,
+* whether evidence was sufficient,
+* incorrect near-matches,
+* temporal/version mistakes,
+* ignored exceptions,
+* missing multi-hop evidence,
+* irrelevant evidence overload,
+* representation-specific failure modes.
 
 Pairs may create **local tests** for their own representation, but they should not create separate competing evaluation frameworks.
 
 ---
 
-# 11. Same Benchmark
+# 13. Same Benchmark
 
 All representations use the same NovaMart evaluation questions.
 
-The benchmark is already provided under:
+The benchmark is provided under:
 
 ```text
 data/queries/
@@ -607,25 +756,31 @@ For example:
 ```text
 Question Q001
    ↓
-Text representation
+Text Representation
    ↓
 Evidence A
+```
 
+```text
 Question Q001
    ↓
-Text + Metadata representation
+Text + Metadata Representation
    ↓
 Evidence B
+```
 
+```text
 Question Q001
    ↓
-Structured representation
+Structured Representation
    ↓
 Evidence C
+```
 
+```text
 Question Q001
    ↓
-Graph representation
+Graph Representation
    ↓
 Evidence D
 ```
@@ -634,7 +789,7 @@ The common evaluator can then compare the evidence.
 
 ---
 
-# 12. Phase 1 vs Phase 2
+# 14. Phase 1 vs Phase 2
 
 This distinction is mandatory.
 
@@ -645,7 +800,7 @@ Source
  ↓
 Representation
  ↓
-Storage
+Storage / Index
  ↓
 Basic / Native Retrieval
  ↓
@@ -653,6 +808,10 @@ Evidence[]
 ```
 
 Each pair owns this part.
+
+The purpose is to prove:
+
+> **Our representation is correctly built, stored, queryable, and capable of returning traceable evidence.**
 
 ## Phase 2 — Lead/shared
 
@@ -668,53 +827,65 @@ Evidence[]
 Common Evaluation
  ↓
 Comparison
+ ↓
+LLM
+ ↓
+Answer
 ```
 
 The lead/shared layer owns the cross-representation experiments.
 
 ---
 
-# 13. What Teams Must NOT Do
+# 15. What Teams Must NOT Do
 
 Without discussion with the lead, teams should not:
 
-* modify `shared/schemas.py`
-* modify `shared/interfaces.py`
-* redesign the common Evidence contract
-* modify the benchmark
-* replace the NovaMart dataset
-* create a separate dataset
-* create a separate application
-* create a separate evaluation framework
-* implement unrelated retrieval systems
-* hardcode answers
-* invent source knowledge
-* add dependencies without discussion
-* modify another pair's representation
-* redesign the overall architecture
+* modify `shared/schemas.py`,
+* modify `shared/interfaces.py`,
+* redesign the common Evidence contract,
+* modify the benchmark,
+* replace the NovaMart dataset,
+* create a separate dataset,
+* create a separate application,
+* create a separate evaluation framework,
+* implement unrelated retrieval systems,
+* hardcode answers,
+* invent source knowledge,
+* add dependencies without discussion,
+* modify another pair's representation,
+* redesign the overall architecture.
 
 If a team discovers that a shared interface genuinely needs to change, raise the issue before modifying it.
 
+---
 
+# 16. Shared Areas vs Pair Ownership
 
-Shared areas include:
+## Shared Areas
 
 ```text
 shared/
 data/
 evaluation/
 app/
+retrieval/
 docs/architecture.md
 ```
 
+These areas affect the integrated project and require coordination.
+
 ## Pair Ownership
 
-Each pair owns only its representation folder:
+Each pair owns its representation folder:
 
 ```text
 Pair 1 → representations/text/
+
 Pair 2 → representations/text_metadata/
+
 Pair 3 → representations/structured_table/
+
 Pair 4 → representations/knowledge_graph/
 ```
 
@@ -722,7 +893,7 @@ Teams may add supporting tests and documentation within their ownership area.
 
 ---
 
-# 15. Definition of Done — Phase 1
+# 17. Definition of Done — Phase 1
 
 A pair is considered complete when:
 
@@ -735,6 +906,8 @@ A pair is considered complete when:
 * [ ] Basic/native retrieval works.
 * [ ] Retrieval returns the common `Evidence[]` structure.
 * [ ] Representative queries have been tested.
+* [ ] Retrieved evidence has been inspected.
+* [ ] Ground-truth comparison has been performed for representative questions.
 * [ ] At least some failure/limitation cases are documented.
 * [ ] No unsupported knowledge has been invented.
 * [ ] Code is contained within the team's ownership boundary.
@@ -744,7 +917,7 @@ A pair is considered complete when:
 
 ---
 
-# 16. Final Project Goal
+# 18. Final Project Goal
 
 The final project should allow us to demonstrate something more meaningful than:
 
@@ -759,9 +932,11 @@ Retrieval Strategy
           ↓
 Retrieved Evidence
           ↓
+Evidence Evaluation
+          ↓
 LLM Answer
           ↓
-Evaluation
+Answer Evaluation
 ```
 
 The same question can produce different evidence depending on how the underlying knowledge is represented and how that representation is searched.
@@ -770,7 +945,7 @@ That difference is the core subject of this project.
 
 ---
 
-# 17. Golden Rule
+# 19. Golden Rule
 
 > **Each pair owns its representation from Source → Representation → Storage → Basic/Native Retrieval → Evidence[].**
 
