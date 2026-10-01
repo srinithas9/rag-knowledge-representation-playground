@@ -465,8 +465,8 @@ Additional project documentation:
 
 * `docs/architecture.md` — System architecture
 * `docs/contribution-guide.md` — Team contribution workflow
-* `docs/team-assignments.md` — Pair responsibilities
-* `evaluation/README.md` — Evaluation methodology
+* `docs/team-assignments.md` — Pair responsibilities.
+* `evaluation/README.md` — Evaluation methodology.
 
 ---
 
