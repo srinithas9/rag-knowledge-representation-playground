@@ -4,492 +4,520 @@
 
 This guide explains how team members should contribute to the **RAG Knowledge Representation & Retrieval Playground**.
 
-The project is intentionally divided into independent modules so that multiple people can work in parallel without breaking the shared architecture.
+The project is a controlled experimentation environment for studying how different knowledge representations and retrieval approaches affect the evidence available to an LLM.
 
-The basic workflow is:
-
-```text
-Research
-   ↓
-Design
-   ↓
-Implement
-   ↓
-Test
-   ↓
-Experiment
-   ↓
-Document
-   ↓
-Pull Request
-   ↓
-Review
-   ↓
-Merge
-```
-
-The project is divided into two main implementation phases:
+The central principle is:
 
 ```text
-Phase 1
-Representation → Storage → Basic/Native Retrieval → Evidence[]
-
-Phase 2
-Advanced Retrieval → Cross-Representation Experiments
-→ Common Evaluation → LLM → Answer
+SAME KNOWLEDGE
+      ↓
+Different Representations / Retrieval Approaches
+      ↓
+SAME QUESTIONS
+      ↓
+Retrieved Evidence
+      ↓
+Common LLM
+      ↓
+Answers
+      ↓
+Evaluation & Comparison
 ```
+
+The goal is not to prove that one technique is always best.
+
+The goal is to understand:
+
+* How the technique represents knowledge.
+* How it stores or indexes that knowledge.
+* How it retrieves evidence.
+* Which questions it handles well.
+* Where it fails.
+* Why it succeeds or fails.
+* How retrieved evidence affects the final answer.
 
 ---
 
-# 2. Before You Start
+# 2. Project Principles
 
-Every team member should understand these project principles before writing code.
+Every team member must follow these principles.
 
-### Same Source
+## Same Source
 
-All teams use the same NovaMart source dataset.
+All teams use the same NovaMart source knowledge.
 
-### Same Benchmark
-
-All teams use the same 40 evaluation questions and ground truth.
-
-### Same Evidence Contract
-
-All retrieval implementations return the common `Evidence` format.
-
-### No Hardcoded Answers
-
-The implementation must retrieve information from the representation rather than returning benchmark answers directly.
-
-### Representation ≠ Retrieval
-
-Knowledge representation and retrieval are separate concepts.
-
-For example:
-
-```text
-Text Representation
-        ↓
-Storage / Index
-        ↓
-Semantic Retrieval
-```
-
-and:
-
-```text
-Structured Representation
-        ↓
-PostgreSQL
-        ↓
-SQL Retrieval
-```
-
-### Compare, Don't Assume
-
-The purpose is to understand the strengths and weaknesses of different approaches, not to prove that one technique is always better.
+Do not create a different version of the dataset for your pipeline.
 
 ---
 
-# 3. Repository Structure
+## Same Benchmark
 
-```text
-rag-knowledge-representation-playground/
-│
-├── data/
-├── shared/
-├── representations/
-├── retrieval/
-├── evaluation/
-├── app/
-└── docs/
-```
-
-### `data/`
-
-Common source data, normalized data, evaluation questions, ground truth, and benchmark information.
-
-### `shared/`
-
-Common interfaces, schemas, configuration, and registries.
-
-### `representations/`
-
-Implementation of the four knowledge representation approaches.
-
-### `retrieval/`
-
-Shared retrieval strategy implementations and Phase 2 retrieval experiments.
-
-### `evaluation/`
-
-Metrics, evaluation logic, and experiment results.
-
-### `app/`
-
-Final integrated application.
-
-### `docs/`
-
-Project architecture, contribution rules, and team assignments.
-
----
-
-# 4. Team Ownership
-
-Each pair owns its assigned representation module.
-
-```text
-Pair 1 → representations/text/
-Pair 2 → representations/text_metadata/
-Pair 3 → representations/structured_table/
-Pair 4 → representations/knowledge_graph/
-```
-
-Each pair owns its representation **end-to-end for Phase 1**.
-
-This means the pair is responsible for:
-
-```text
-Understand Source
-      ↓
-Design Representation
-      ↓
-Transform Data
-      ↓
-Store / Index
-      ↓
-Basic / Native Retrieval
-      ↓
-Evidence[]
-```
-
-Teams are responsible for:
-
-* Research
-* Technical design
-* Representation implementation
-* Storage/index implementation
-* Basic/native retrieval
-* Unit tests
-* Representation-level experiments
-* Failure analysis
-* Documentation
-
-The project lead owns the integration and shared areas.
-
----
-
-# 5. Shared Areas
-
-The following areas are shared project infrastructure:
-
-```text
-shared/
-data/
-evaluation/
-app/
-docs/architecture.md
-```
-
-The following is also a shared Phase 2 area:
-
-```text
-retrieval/
-```
-
-Do not modify shared infrastructure casually.
-
-In particular, do not change:
-
-```text
-shared/interfaces.py
-shared/schemas.py
-shared/config.py
-shared/registry.py
-```
-
-without coordinating with the project lead.
-
-These files define contracts used by multiple parts of the project.
-
----
-
-# 6. Dataset Rules
-
-The common dataset is part of the project's experimental control.
-
-Teams must not:
-
-* Modify the source handbook
-* Change the normalized dataset
-* Add private benchmark questions
-* Remove evaluation questions
-* Modify ground truth to improve results
-* Create a separate competing dataset
-
-If a genuine data issue is discovered, report it to the project lead.
-
-The benchmark currently contains:
+All teams use the same official benchmark:
 
 ```text
 40 evaluation questions
 40 ground-truth entries
 ```
 
-All teams should evaluate against the same benchmark.
+The benchmark must remain unchanged.
+
+Teams may create additional development or exploratory questions for testing, but these must not replace or modify the official benchmark.
 
 ---
 
-# 7. Git Workflow
+## No Hardcoded Answers
 
-Do not work directly on `main`.
+Do not hardcode benchmark answers into the implementation.
 
-Each pair should create a feature branch.
+The system must retrieve information from the implemented knowledge representation.
 
-Examples:
+Bad:
 
-```text
-feature/text-representation
-feature/text-metadata
-feature/structured
-feature/knowledge-graph
+```python
+if query == "What is the refund period?":
+    return "60 days"
 ```
 
-Create a branch:
-
-```bash
-git checkout -b feature/<your-feature>
-```
-
-Check the current branch:
-
-```bash
-git branch
-```
-
-The active branch should be your feature branch.
-
----
-
-# 8. Before Starting Work
-
-Always synchronize with `main` before starting new work.
-
-```bash
-git checkout main
-git pull origin main
-```
-
-Then create or update your feature branch.
-
-If your feature branch already exists:
-
-```bash
-git checkout feature/<your-feature>
-git merge main
-```
-
-Resolve conflicts carefully if they occur.
-
----
-
-# 9. Development Workflow
-
-## Step 1 — Research
-
-Understand the technique before implementing it.
-
-Research questions should include:
-
-* What problem does this technique solve?
-* How does it represent knowledge?
-* Where is the knowledge stored?
-* How does basic/native retrieval work?
-* What assumptions does it make?
-* What are its strengths?
-* What are its weaknesses?
-* What types of queries should it handle well?
-* What types of queries might cause failure?
-
----
-
-## Step 2 — Design
-
-Before coding, decide:
-
-* Input format
-* Internal representation
-* Storage/index
-* Basic/native retrieval method
-* Metadata requirements
-* Output format
-* Testing approach
-* Experiment design
-
-The design should remain compatible with the project's shared interfaces.
-
----
-
-## Step 3 — Implement
-
-Implement only within your assigned representation module unless a shared change has been discussed.
-
-Your Phase 1 implementation should cover:
-
-```text
-Source
-   ↓
-Representation
-   ↓
-Storage / Index
-   ↓
-Basic / Native Retrieval
-   ↓
-Evidence[]
-```
-
-Do not implement every possible retrieval strategy independently.
-
-For example, the Text pair does not need to independently build keyword, semantic, hybrid, and reranking systems.
-
-Advanced retrieval comparisons belong primarily to Phase 2.
-
-Keep implementation modular.
-
-Avoid hardcoding answers for evaluation questions.
-
----
-
-# 10. How to Test Your Representation
-
-The main Phase 1 output is **retrieved evidence**, not an LLM answer.
-
-Use this flow:
-
-```text
-Source
-   ↓
-Representation
-   ↓
-Storage
-   ↓
-Question
-   ↓
-Basic / Native Retrieval
-   ↓
-Top-K Evidence
-   ↓
-Compare with Ground Truth
-```
-
-For each representation, inspect:
-
-* Was the relevant information retrieved?
-* Was it ranked appropriately?
-* Is the evidence complete?
-* Can it be traced to the source?
-* Was irrelevant information retrieved?
-* Was an important constraint missed?
-* Was an outdated policy retrieved?
-* Did chunking/entity design affect retrieval?
-* Did the representation make the query difficult?
-
-### LLM is not required for Phase 1
-
-Do not depend on the LLM to prove that your retrieval works.
-
-The important Phase 1 question is:
-
-> **Can our representation retrieve the right evidence?**
-
-The LLM comes later:
+Correct:
 
 ```text
 Question
+   ↓
+Pipeline
+   ↓
+Representation
    ↓
 Retrieval
    ↓
-Evidence[]
-   ↓
-LLM
-   ↓
-Answer
+Evidence
 ```
-
-This prevents a plausible LLM answer from hiding a retrieval failure.
 
 ---
 
-# 11. Phase 1 vs Phase 2 Responsibilities
+## Common Evidence Contract
 
-## Phase 1 — Representation Readiness
+Every pipeline must ultimately return the common `Evidence` structure.
 
-Each pair owns:
+Conceptually:
 
 ```text
-Representation
-      +
-Storage / Index
-      +
-Basic / Native Retrieval
-      ↓
-Evidence[]
+Evidence
+├── content
+├── source_id
+├── score
+└── metadata
 ```
 
-Examples:
+This allows the integration and evaluation layers to compare different pipelines consistently.
 
-### Text
+---
+
+## Representation and Retrieval
+
+Representation and retrieval are distinct concepts, but they are intentionally owned together inside each pipeline.
+
+The reason is that the appropriate retrieval method depends on how the knowledge is represented.
+
+For example:
 
 ```text
-Text chunks
+Text
    ↓
-Text storage/index
+Chunk / text index
    ↓
-Basic text retrieval
+Keyword / dense / hybrid retrieval
 ```
 
-### Text + Metadata
+while:
 
 ```text
-Text + metadata
-   ↓
-Metadata-aware storage/index
-   ↓
-Basic text + metadata filtering
-```
-
-### Structured
-
-```text
-Tables / entities
+Structured Data
    ↓
 PostgreSQL
    ↓
 SQL retrieval
 ```
 
-### Knowledge Graph
+and:
 
 ```text
-Nodes + relationships
+Knowledge Graph
    ↓
-Graph store
+Graph Store
    ↓
-Basic graph traversal
+Graph traversal / graph query
+```
+
+Do not force the same retrieval technique onto every representation.
+
+---
+
+# 3. Repository Structure
+
+The repository is organized into vertical pipelines.
+
+```text
+rag-knowledge-representation-playground/
+│
+├── data/
+│
+├── shared/
+│
+├── pipelines/
+│   ├── text/
+│   ├── metadata/
+│   ├── structured/
+│   └── graph/
+│
+├── llm/
+│
+├── evaluation/
+│
+├── integration/
+│
+├── app/
+│
+└── docs/
 ```
 
 ---
 
-## Phase 2 — Retrieval Experiments
+# 4. Pipeline Structure
 
-Phase 2 focuses on advanced retrieval and cross-representation comparison.
+Each pair owns one complete pipeline.
 
-Potential retrieval strategies include:
+The expected structure is:
 
 ```text
-Keyword
-Vector / Semantic
+pipelines/<pipeline-name>/
+│
+├── __init__.py
+├── README.md
+├── representation.py
+├── retriever.py
+├── pipeline.py
+├── evaluator.py
+└── tests/
+```
+
+The exact internal implementation can differ between pipelines.
+
+The important requirement is that each pipeline provides the required functionality and follows the common project contracts.
+
+---
+
+# 5. Pipeline Ownership
+
+The four pairs are assigned as follows:
+
+```text
+Pair 1 → pipelines/text/
+
+Pair 2 → pipelines/metadata/
+
+Pair 3 → pipelines/structured/
+
+Pair 4 → pipelines/graph/
+```
+
+Each pair owns its assigned pipeline end-to-end.
+
+The expected flow is:
+
+```text
+NovaMart Source
+      ↓
+Representation
+      ↓
+Storage / Index
+      ↓
+Retrieval
+      ↓
+Evidence
+      ↓
+Pipeline Evaluation
+```
+
+The pair is responsible for:
+
+* Understanding the source data relevant to its approach.
+* Designing the representation.
+* Building the representation.
+* Choosing appropriate storage or indexing.
+* Implementing appropriate retrieval.
+* Returning common `Evidence`.
+* Testing the pipeline.
+* Running experiments.
+* Recording failure cases.
+* Documenting design decisions.
+* Maintaining its pipeline README.
+
+---
+
+# 6. Pair Boundaries
+
+Pairs should work primarily inside their assigned folder.
+
+### Pair 1
+
+```text
+pipelines/text/
+```
+
+### Pair 2
+
+```text
+pipelines/metadata/
+```
+
+### Pair 3
+
+```text
+pipelines/structured/
+```
+
+### Pair 4
+
+```text
+pipelines/graph/
+```
+
+Do not modify another pair's pipeline without coordination.
+
+Do not move another pair's files.
+
+Do not redesign another pair's implementation.
+
+If two pipelines need shared functionality, discuss it with the project lead before changing shared code.
+
+---
+
+# 7. Shared Areas
+
+The following are shared project infrastructure:
+
+```text
+data/
+shared/
+evaluation/
+integration/
+llm/
+app/
+docs/architecture.md
+docs/contribution-guide.md
+docs/team-assignments.md
+```
+
+These areas should not be modified casually.
+
+In particular, coordinate before changing:
+
+```text
+shared/schemas.py
+shared/interfaces.py
+shared/config.py
+```
+
+or any integration contract.
+
+A shared change can affect multiple pipelines.
+
+---
+
+# 8. Dataset Rules
+
+The NovaMart dataset is part of the controlled experiment.
+
+Teams must not:
+
+* Modify the source handbook.
+* Modify the normalized source data.
+* Change the official evaluation questions.
+* Modify ground truth.
+* Remove benchmark questions.
+* Create a private competing dataset.
+* Hardcode benchmark answers.
+
+If a genuine data problem is discovered:
+
+```text
+Identify issue
+     ↓
+Document issue
+     ↓
+Inform project lead
+     ↓
+Discuss before changing anything
+```
+
+Do not silently modify the dataset.
+
+---
+
+# 9. Before Starting Implementation
+
+Every pair must first understand:
+
+```text
+1. What problem does our representation solve?
+
+2. Why is this representation useful?
+
+3. What NovaMart information maps naturally to it?
+
+4. What information does it represent poorly?
+
+5. What storage/index is appropriate?
+
+6. What retrieval method is appropriate?
+
+7. Which benchmark questions should benefit?
+
+8. Which questions might fail?
+
+9. How will evidence be traced to the source?
+
+10. What experiments will demonstrate the trade-offs?
+```
+
+Do not start by blindly implementing a library tutorial.
+
+Understand the problem first.
+
+---
+
+# 10. Research Phase
+
+Before implementation, research the assigned technology.
+
+Answer:
+
+* What is the technique?
+* What problem does it solve?
+* How does it represent knowledge?
+* How is the knowledge stored?
+* How is retrieval performed?
+* What assumptions does it make?
+* What are its strengths?
+* What are its weaknesses?
+* What types of questions should it handle well?
+* What types of questions might cause failure?
+* What alternatives were considered?
+* Why was the chosen approach selected?
+
+The goal is not to collect theory.
+
+The goal is to make a defensible engineering decision.
+
+---
+
+# 11. Design Phase
+
+Before coding, each pair should define:
+
+```text
+Source Input
+      ↓
+Representation
+      ↓
+Storage / Index
+      ↓
+Retrieval
+      ↓
+Evidence
+      ↓
+Evaluation
+```
+
+The design should specify:
+
+* Input data.
+* Representation structure.
+* Storage/index.
+* Retrieval method.
+* Query handling.
+* Top-K behavior where applicable.
+* Metadata requirements.
+* Source traceability.
+* Error handling.
+* Testing approach.
+* Experiment approach.
+
+---
+
+# 12. Implementation Phase
+
+Implement only within the assigned pipeline unless a shared change has been approved.
+
+The pipeline should provide a complete path:
+
+```text
+NovaMart Knowledge
+      ↓
+Representation
+      ↓
+Storage / Index
+      ↓
+Retrieval
+      ↓
+Evidence
+```
+
+The exact implementation is up to the pair.
+
+For example, the Text pipeline may use:
+
+```text
+Policy text
+   ↓
+Semantic chunks
+   ↓
+Text/vector index
+   ↓
+Dense / keyword / hybrid retrieval
+   ↓
+Evidence
+```
+
+The Structured pipeline may use:
+
+```text
+Entities / relationships
+   ↓
+PostgreSQL
+   ↓
+SQL retrieval
+   ↓
+Evidence
+```
+
+The Graph pipeline may use:
+
+```text
+Entities + relationships
+   ↓
+Graph store
+   ↓
+Graph traversal/query
+   ↓
+Evidence
+```
+
+These implementations do not need to be identical.
+
+---
+
+# 13. Retrieval Strategy
+
+Each pair should choose retrieval that is appropriate for its representation.
+
+Do not implement every retrieval technique just because it exists.
+
+Potential retrieval approaches across the project include:
+
+```text
+Keyword / BM25
+Dense / Semantic
 Hybrid
 Metadata Filtering
 Reranking
@@ -497,49 +525,24 @@ SQL / Structured Retrieval
 Graph Traversal
 ```
 
-Not every retrieval strategy applies to every representation.
+Not every approach applies to every pipeline.
 
-Examples:
+For example:
 
-| Representation  | Applicable retrieval examples               |
-| --------------- | ------------------------------------------- |
-| Text            | Keyword, Vector, Hybrid                     |
-| Text + Metadata | Keyword, Vector, Hybrid, Metadata Filtering |
-| Structured      | SQL / Structured Retrieval                  |
-| Knowledge Graph | Graph Traversal                             |
+| Pipeline   | Possible retrieval approaches                 |
+| ---------- | --------------------------------------------- |
+| Text       | Keyword, dense, hybrid, reranking             |
+| Metadata   | Dense + metadata filtering, hybrid, reranking |
+| Structured | SQL / relational retrieval                    |
+| Graph      | Graph traversal / graph queries               |
 
-The goal is to compare **meaningful combinations**, not force every strategy onto every representation.
-
----
-
-# 12. Testing
-
-Every implementation should include meaningful tests.
-
-Tests should verify things such as:
-
-* Data loading
-* Representation creation
-* Storage/index creation
-* Basic/native retrieval
-* Evidence format
-* Source traceability
-* Edge cases
-* Failure cases
-
-Run:
-
-```bash
-python -m pytest
-```
-
-before creating a Pull Request.
+The goal is to create **meaningful representation + retrieval combinations**.
 
 ---
 
-# 13. Evidence Contract
+# 14. Common Evidence Contract
 
-Retrievers must return:
+Retrieval results must ultimately be represented using:
 
 ```python
 @dataclass
@@ -552,136 +555,266 @@ class Evidence:
 
 ### `content`
 
-Retrieved information.
+The actual information retrieved from the pipeline.
 
 ### `source_id`
 
-Identifier that allows the evidence to be traced back to the source.
+An identifier that allows the evidence to be traced back to the NovaMart source.
 
 ### `score`
 
-Retrieval relevance score when available.
+The retrieval relevance score when the underlying method provides one.
+
+If the retrieval method does not naturally produce a comparable score, the implementation should document how the returned score is interpreted.
+
+Do not invent a misleading confidence score simply to fill the field.
 
 ### `metadata`
 
-Additional information useful for tracing or analysis.
+Additional information useful for tracing, debugging, filtering, or analysis.
 
-The common format allows different implementations to be evaluated using the same evaluation layer.
+Examples may include:
 
----
-
-# 14. Retrieval Interface
-
-Retrievers should follow:
-
-```python
-class Retriever(ABC):
-
-    @abstractmethod
-    def retrieve(
-        self,
-        query: str,
-        top_k: int = 5,
-        filters: dict | None = None,
-    ) -> list[Evidence]:
-        pass
+```text
+policy_id
+region
+customer_tier
+chunk_id
+table
+entity
+relationship
+retrieval_method
 ```
 
-Teams should not create incompatible retrieval APIs for individual modules.
-
-If the interface is insufficient for a legitimate use case, discuss the requirement before changing the shared interface.
+Only include metadata that is actually supported by the implementation.
 
 ---
 
-# 15. Experiments
+# 15. Source Traceability
 
-Phase 1 experiments should verify that the representation and its basic/native retrieval path work.
+Every retrieved evidence item should be traceable to the common NovaMart knowledge.
 
-Teams should record:
+The project should be able to answer:
 
-* Configuration
-* Representation design
-* Storage/index
-* Retrieval method
-* Top-K
-* Relevant source IDs
-* Retrieved source IDs
+> Where did this evidence come from?
+
+For example:
+
+```text
+Query
+  ↓
+Evidence
+  ↓
+source_id
+  ↓
+NovaMart source
+```
+
+Internal IDs such as:
+
+```text
+chunk_17
+row_42
+node_103
+```
+
+may be used, but they should be traceable back to the source.
+
+---
+
+# 16. Evaluation
+
+The project evaluates retrieval separately from final answer generation.
+
+The primary pipeline question is:
+
+> **Did we retrieve the evidence required to answer the question?**
+
+Relevant retrieval metrics may include:
+
+* Recall@K
+* Precision@K
+* MRR
+* nDCG@K where appropriate
 * Retrieval latency
-* Relevant metrics
-* Failure cases
-* Observations
+* Evidence coverage
 
-Phase 2 experiments will compare applicable retrieval strategies across representations using the common evaluation framework.
+Do not blindly calculate every metric.
 
-The objective is to understand **why** a method succeeds or fails.
+Use metrics appropriate to the retrieval approach.
 
-Do not report only a single aggregate score.
+The official benchmark provides the common basis for comparison.
 
 ---
 
-# 16. Failure Analysis
+# 17. Development Questions vs Official Benchmark
 
-Teams should identify representative failure cases.
+The official 40 questions are the controlled benchmark.
 
-Examples:
+They are not the only questions a pair should use during development.
+
+Pairs should also test:
+
+* Additional questions.
+* Edge cases.
+* Unseen questions.
+* Boundary cases.
+* Failure cases.
+* Representation-specific questions.
+
+The distinction is:
+
+```text
+Development
+    ↓
+Open-ended experimentation
+    ↓
+Improve and understand pipeline
+
+Formal Evaluation
+    ↓
+Same 40 benchmark questions
+    ↓
+Fair comparison
+```
+
+Do not optimize the implementation by hardcoding behavior for the benchmark.
+
+---
+
+# 18. Failure Analysis
+
+Failures are valuable experimental results.
+
+Examples include:
 
 ```text
 Wrong policy version
 Wrong region
 Wrong customer tier
-Near-match entity
+Similar but incorrect policy
 Missed exception
-Incomplete multi-hop relationship
+Incomplete relationship
 Irrelevant evidence
 Insufficient evidence
 Poor chunking
 Missing metadata
-Incorrect entity/relationship modeling
+Incorrect entity modeling
+Incorrect relationship modeling
 ```
 
-For each important failure, explain:
+For important failures, document:
 
 ```text
 Query
-↓
-Expected evidence
-↓
-Retrieved evidence
-↓
+  ↓
+Expected Evidence
+  ↓
+Retrieved Evidence
+  ↓
 What went wrong?
-↓
-Why did the approach behave this way?
+  ↓
+Why did it happen?
+  ↓
+What could improve it?
 ```
 
-The purpose is to understand the behavior of the representation and retrieval approach.
+Do not hide failures simply because they reduce the score.
 
 ---
 
-# 17. Documentation Requirements
+# 19. LLM Responsibility
 
-Each representation module should contain a README.
+The common LLM is part of the integrated system.
 
-A team README should explain:
+Individual pairs should focus primarily on producing good retrieved evidence.
 
-### 1. Approach
+Do not use the LLM to hide retrieval problems.
 
-What representation was implemented?
+For example:
 
-### 2. Design
+```text
+Retrieval fails
+     ↓
+LLM somehow produces correct answer
+```
 
-How is the knowledge represented?
+This does not mean the retrieval system worked correctly.
 
-### 3. Storage
+The project specifically wants to understand whether the required evidence was actually retrieved.
 
-Where and how is the representation stored/indexed?
+The integrated system will later evaluate:
 
-### 4. Basic Retrieval
+```text
+Retrieval
+   ↓
+Evidence
+   ↓
+LLM
+   ↓
+Answer
+```
 
-How is evidence retrieved in Phase 1?
+---
 
-### 5. Integration
+# 20. Testing Requirements
 
-How does the module use the common interfaces?
+Each pipeline must contain meaningful tests.
+
+Tests should cover appropriate parts of:
+
+```text
+Data loading
+Representation creation
+Storage/index creation
+Retrieval
+Evidence generation
+Source traceability
+Edge cases
+Failure cases
+```
+
+Run:
+
+```bash
+python -m pytest
+```
+
+before creating a Pull Request.
+
+Do not submit a pipeline with only placeholder tests.
+
+---
+
+# 21. README Requirements
+
+Each pipeline must maintain its own:
+
+```text
+pipelines/<pipeline-name>/README.md
+```
+
+The README should explain:
+
+### 1. Problem
+
+What problem does this pipeline investigate?
+
+### 2. Representation
+
+How is NovaMart knowledge represented?
+
+### 3. Storage / Index
+
+Where and how is the representation stored?
+
+### 4. Retrieval
+
+How is evidence retrieved?
+
+### 5. Design Decisions
+
+Why were these choices made?
 
 ### 6. Experiments
 
@@ -693,99 +826,82 @@ What was observed?
 
 ### 8. Failure Cases
 
-Where did the approach struggle?
+Where did the pipeline struggle?
 
 ### 9. Limitations
 
 What are the known limitations?
 
----
+### 10. Integration
 
-# 18. Code Quality
-
-Keep code:
-
-* Modular
-* Readable
-* Testable
-* Documented where necessary
-* Consistent with the project's interfaces
-
-Avoid:
-
-* Hardcoded benchmark answers
-* Duplicated datasets
-* Unnecessary dependencies
-* Representation-specific logic in shared code
-* Unexplained magic values
-* Large monolithic files
+How does the pipeline return common `Evidence`?
 
 ---
 
-# 19. Dependencies
+# 22. Dependencies
 
-Before adding a new dependency, check whether it is genuinely required.
+Before adding a dependency, check whether it is genuinely required.
 
-Do not introduce libraries simply because they are popular.
+Do not add libraries simply because they are popular.
 
 If a new dependency is necessary:
 
 1. Explain why it is needed.
 2. Add it to `requirements.txt`.
-3. Ensure the project still installs correctly.
-4. Inform the project lead.
+3. Verify installation.
+4. Test the project.
+5. Inform the project lead.
+
+Do not modify dependencies casually because another library happens to be easier.
 
 ---
 
-# 20. Commits
+# 23. Git Workflow
 
-Keep commits focused.
+Do not work directly on `main`.
 
-Good:
-
-```bash
-git commit -m "Implement text chunking"
-```
+Start by synchronizing:
 
 ```bash
-git commit -m "Add text retrieval tests"
+git checkout main
+git pull origin main
 ```
+
+Create your feature branch:
 
 ```bash
-git commit -m "Document chunking experiments"
+git checkout -b feature/<your-feature>
 ```
 
-Avoid vague commits such as:
+Examples:
 
 ```text
-update
-changes
-final
-test
-stuff
+feature/text-pipeline
+feature/metadata-pipeline
+feature/structured-pipeline
+feature/graph-pipeline
 ```
 
----
+Work inside your assigned pipeline.
 
-# 21. Push Your Branch
+Commit focused changes:
 
-After committing:
+```bash
+git add .
+git commit -m "Implement text pipeline retrieval"
+```
+
+Push:
 
 ```bash
 git push -u origin feature/<your-feature>
 ```
 
-For later pushes:
-
-```bash
-git push
-```
-
 ---
 
-# 22. Pull Request
+# 24. Pull Request
 
-Create a Pull Request from:
+Create the Pull Request from:
 
 ```text
 feature/<your-feature>
@@ -799,95 +915,153 @@ main
 
 The Pull Request should explain:
 
-* What was implemented
-* Why the design was chosen
-* What was tested
-* What experiments were performed
-* What was learned
-* Known limitations
-
-For Phase 1, also include:
-
-* Representation approach
-* Storage/index approach
-* Basic/native retrieval approach
-* Example retrieved evidence
-* Source traceability
-* Representative failure cases
+* What was implemented.
+* Why the design was chosen.
+* What representation was used.
+* What storage/index was used.
+* What retrieval method was used.
+* What was tested.
+* What experiments were performed.
+* What was learned.
+* Known limitations.
+* Representative failure cases.
 
 ---
 
-# 23. Pull Request Checklist
+# 25. Shared Change Approval
+
+Discuss with the project lead before modifying:
+
+```text
+data/
+shared/
+integration/
+llm/
+evaluation/
+app/
+docs/architecture.md
+docs/team-assignments.md
+requirements.txt
+```
+
+In particular, coordinate before changing:
+
+```text
+shared/schemas.py
+shared/interfaces.py
+shared/config.py
+```
+
+Do not change common contracts independently.
+
+If your pipeline genuinely requires a contract change:
+
+```text
+Identify requirement
+      ↓
+Explain why existing contract is insufficient
+      ↓
+Discuss with project lead
+      ↓
+Agree on change
+      ↓
+Implement change
+      ↓
+Verify other pipelines
+```
+
+---
+
+# 26. Code Quality
+
+Keep code:
+
+* Modular.
+* Readable.
+* Testable.
+* Understandable.
+* Documented where necessary.
+* Consistent with common project contracts.
+
+Avoid:
+
+* Hardcoded benchmark answers.
+* Duplicated datasets.
+* Unnecessary dependencies.
+* Representation-specific logic inside shared code.
+* Unexplained magic values.
+* Large monolithic files.
+* Changes outside your assigned area.
+* Implementations copied without understanding them.
+
+Every pair should be able to explain its own implementation during review.
+
+---
+
+# 27. Commit Quality
+
+Keep commits focused and meaningful.
+
+Good:
+
+```text
+Implement policy-boundary text representation
+```
+
+```text
+Add metadata-filtered retrieval
+```
+
+```text
+Add structured pipeline tests
+```
+
+```text
+Document graph traversal experiments
+```
+
+Avoid:
+
+```text
+update
+changes
+final
+stuff
+test
+```
+
+---
+
+# 28. Pull Request Checklist
 
 Before requesting review:
 
 ```text
 [ ] Correct feature branch used
-[ ] No changes to shared data
-[ ] No hardcoded benchmark answers
-[ ] Common interfaces followed
-[ ] Evidence objects contain source IDs
-[ ] Representation is documented
-[ ] Storage/index is documented
-[ ] Basic/native retrieval works
+[ ] Work is inside assigned pipeline
+[ ] Common dataset is unchanged
+[ ] Official benchmark is unchanged
+[ ] No hardcoded answers
+[ ] Common Evidence contract followed
+[ ] Source traceability works
+[ ] Representation documented
+[ ] Storage/index documented
+[ ] Retrieval documented
 [ ] Tests added
 [ ] Tests pass
 [ ] Experiments documented
 [ ] Failure cases documented
 [ ] README updated
-[ ] No unnecessary dependencies
-[ ] Code is limited to the assigned area
+[ ] Dependencies justified
+[ ] No unrelated files changed
+[ ] Code can be explained by both pair members
 ```
 
 ---
 
-# 24. Keeping Your Branch Updated
+# 29. Definition of Done
 
-The `main` branch may receive changes from other teams.
-
-Before continuing significant work:
-
-```bash
-git checkout main
-git pull origin main
-```
-
-Then update your feature branch:
-
-```bash
-git checkout feature/<your-feature>
-git merge main
-```
-
-Resolve conflicts carefully.
-
-Do not overwrite another team's work.
-
----
-
-# 25. What Requires Project Lead Approval?
-
-Coordinate before changing:
-
-```text
-shared/interfaces.py
-shared/schemas.py
-shared/config.py
-shared/registry.py
-data/
-evaluation/
-app/
-retrieval/
-docs/architecture.md
-```
-
-A shared change can affect multiple teams, so it should be discussed before implementation.
-
----
-
-# 26. Definition of Done
-
-A Phase 1 representation contribution is considered complete when:
+A pipeline is ready for integration when:
 
 ```text
 Research
@@ -898,7 +1072,9 @@ Representation
    ↓
 Storage / Index
    ↓
-Basic / Native Retrieval
+Retrieval
+   ↓
+Evidence
    ↓
 Tests
    ↓
@@ -915,42 +1091,52 @@ Review
 Integration
 ```
 
-The code working locally is **not the only definition of done**.
-
-The team should also be able to explain:
+Both members of the pair should be able to explain:
 
 > What did we build?
 
-> Why did we design it this way?
+> Why did we choose this representation?
 
-> How is the knowledge represented?
+> Why did we choose this storage/index?
 
-> Where is it stored?
+> Why did we choose this retrieval method?
 
-> How does basic retrieval work?
+> How is evidence produced?
 
-> What evidence does it retrieve?
+> How is evidence traced to the source?
 
-> What queries does it handle well?
+> Which questions does it handle well?
 
 > Where does it fail?
+
+> Why does it fail?
 
 > What did we learn?
 
 ---
 
-# 27. Final Principle
+# 30. Final Principle
 
-This project is a learning and comparison environment.
+We are **not building four unrelated RAG systems**.
 
-The goal is not:
+We are building one controlled experimentation playground.
 
-> "Our technique is the best."
+The same NovaMart knowledge and the same benchmark questions must pass through different pipelines so that we can understand:
 
-The goal is:
-
-> **"We understand how this technique represents knowledge, how it stores and retrieves evidence, what kinds of questions it handles well, where it fails, and why."**
+> **How does the way we represent and retrieve knowledge change the evidence available to the LLM, and how does that affect the final answer?**
 
 A successful contribution is therefore:
 
-> **working implementation + meaningful evidence + meaningful understanding.**
+```text
+Working Pipeline
++
+Traceable Evidence
++
+Meaningful Evaluation
++
+Failure Analysis
++
+Clear Documentation
++
+Understanding
+```
