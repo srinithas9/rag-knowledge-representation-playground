@@ -2,108 +2,204 @@
 
 ## 1. Purpose
 
-The **RAG Knowledge Representation & Retrieval Playground** is a single integrated project designed to study how different ways of representing and retrieving the same knowledge affect the evidence available to an LLM and the final RAG answer.
+The **RAG Knowledge Representation & Retrieval Playground** is a single integrated project designed to study how different ways of representing knowledge and different retrieval strategies affect the evidence retrieved by a RAG system.
 
-The project uses the same:
-
-**NovaMart Customer & Operations Policy Handbook — 2026 V3**
-
-as the common knowledge source for all teams.
+The project uses the same **NovaMart Customer & Operations Policy Handbook — 2026 V3** as the common knowledge source for all teams.
 
 The core research question is:
 
-> **How does the way we represent and retrieve knowledge affect the evidence retrieved for the same question, and how does that evidence affect the final RAG answer?**
+> **How does the combination of knowledge representation and retrieval strategy affect the evidence retrieved for the same question, and how does that evidence affect the final RAG answer?**
 
-The project is therefore **not four independent RAG applications**.
+The project is **not four independent RAG applications**.
 
-It is one integrated experimentation platform containing four independently developed pipelines that can later be compared using common evaluation and integration layers.
+It is one integrated system containing multiple representation pipelines that can later be compared under a common evaluation and integration framework.
 
 ---
 
 # 2. Overall Architecture
 
-The project follows this conceptual flow:
+The complete project follows this conceptual pipeline:
 
 ```text
-                    SAME NOVAMART SOURCE
-                           │
-        ┌──────────────────┼──────────────────┐
-        │                  │                  │
-        ▼                  ▼                  ▼
-      TEXT             METADATA          STRUCTURED
-        │                  │                  │
-        │                  │                  │
-        └──────────────────┼──────────────────┘
-                           │
-                           ▼
-                    KNOWLEDGE GRAPH
+                    SAME NOVAMART KNOWLEDGE
+                              │
+                              ▼
+                     Common Source Data
+                              │
+            ┌─────────────────┼─────────────────┐
+            │                 │                 │
+            ▼                 ▼                 ▼                 ▼
+          TEXT          STRUCTURED          GRAPH              VISUAL
+            │                 │                 │                 │
+            ▼                 ▼                 ▼                 ▼
+      Pair-owned         Pair-owned       Pair-owned         Pair-owned
+       pipeline            pipeline         pipeline           pipeline
+            │                 │                 │                 │
+            ▼                 ▼                 ▼                 ▼
+      PipelineResult    PipelineResult   PipelineResult    PipelineResult
+            └─────────────────┼─────────────────┘
+                              ▼
+                    Common Evaluation
+                              │
+                              ▼
+                         Common LLM
+                              │
+                              ▼
+                      Answer Evaluation
+                              │
+                              ▼
+                         Comparison
+                              │
+                              ▼
+                          Final UI
 ```
 
-More accurately, each representation is independently derived from the same source:
+The four core representation approaches are:
+
+1. **Text / Chunked Text**
+2. **Structured / Relational Data**
+3. **Knowledge Graph**
+4. **Visual / Multimodal Document Representation**
+
+These are parallel alternatives created from the same NovaMart source.
 
 ```text
-                         NovaMart Source
-                               │
-          ┌────────────────────┼────────────────────┐
-          │                    │                    │
-          ▼                    ▼                    ▼
-     Text Pipeline      Metadata Pipeline    Structured Pipeline
-          │                    │                    │
-          │                    │                    │
-          └────────────────────┼────────────────────┘
-                               │
-                         Graph Pipeline
+                         Common NovaMart Source
+                                  │
+             ┌────────────────────┼────────────────────┐
+             │                    │                    │
+             ▼                    ▼                    ▼                    ▼
+           TEXT              STRUCTURED             GRAPH               VISUAL
+             │                    │                    │                    │
+             ▼                    ▼                    ▼                    ▼
+          Pipeline             Pipeline             Pipeline             Pipeline
 ```
 
-Each pipeline follows:
+No representation is required to be built downstream from another representation.
 
-```text
-Source
-  ↓
-Representation
-  ↓
-Storage / Index
-  ↓
-Retrieval
-  ↓
-Evidence[]
-```
-
-Later, the shared integration layer connects the pipelines to:
-
-```text
-Evidence[]
-    ↓
-Common Evaluation
-    ↓
-Common LLM
-    ↓
-Answer
-    ↓
-Answer Evaluation
-    ↓
-Comparison
-```
+Each pair builds its assigned representation directly from the common source knowledge.
 
 ---
 
-# 3. The Four Pipelines
+# 3. Representation vs Storage vs Retrieval
 
-The project currently contains four core pipelines:
+The most important architectural distinction is:
 
 ```text
-pipelines/
-├── text/
-├── metadata/
-├── structured/
-└── graph/
+Representation ≠ Storage / Index ≠ Retrieval
 ```
 
-Each pipeline is a complete vertical slice.
+## Representation
 
-This means the pair does not only build the representation.
+Representation describes:
 
-The pair owns the complete path:
+> **How the knowledge is organized.**
+
+Our four core representations are:
+
+```text
+Text / Chunked Text
+Structured / Relational Data
+Knowledge Graph
+Visual / Multimodal Document
+```
+
+Metadata can be attached to a representation where useful, but **metadata is not a separate core representation in this project**.
+
+For example:
+
+```text
+Text chunk
++
+region
++
+customer tier
++
+policy version
+```
+
+is still a text representation with metadata.
+
+---
+
+## Storage / Index
+
+Storage or indexing describes:
+
+> **Where or how the representation is persisted and made searchable.**
+
+Examples:
+
+```text
+Text index
+Vector store
+PostgreSQL
+Graph database
+Multimodal / vector index
+```
+
+The storage technology is a design decision of the relevant pair.
+
+---
+
+## Retrieval
+
+Retrieval describes:
+
+> **How relevant information is found from the representation.**
+
+Examples include:
+
+```text
+Keyword retrieval
+Semantic / vector retrieval
+Hybrid retrieval
+Metadata filtering
+Reranking
+SQL retrieval
+Graph traversal
+Multimodal retrieval
+```
+
+Not every retrieval method applies naturally to every representation.
+
+For example:
+
+```text
+Text
+  ↓
+Semantic / Keyword / Hybrid Retrieval
+```
+
+```text
+Structured
+  ↓
+SQL / Structured Retrieval
+```
+
+```text
+Graph
+  ↓
+Graph Traversal
+```
+
+```text
+Visual
+  ↓
+Multimodal / Multi-vector Retrieval
+```
+
+The project should compare **meaningful representation + retrieval combinations**, not force every retrieval method onto every representation.
+
+---
+
+# 4. Team Responsibility Model
+
+The project follows a **vertical-slice ownership model**.
+
+Each pair owns its assigned representation end-to-end through basic/native retrieval and evidence generation.
+
+Every pair is responsible for:
 
 ```text
 SOURCE
@@ -112,497 +208,295 @@ REPRESENTATION
    ↓
 STORAGE / INDEX
    ↓
-RETRIEVAL
+BASIC / NATIVE RETRIEVAL
    ↓
-EVIDENCE[]
+Evidence[]
+   ↓
+PipelineResult
 ```
 
-The implementation details can differ between pipelines.
+This means each pair should understand:
+
+* the source knowledge relevant to its representation,
+* how the knowledge should be represented,
+* how the representation should be stored,
+* how it can be queried,
+* how retrieved results can be converted into the common `Evidence` format,
+* what kinds of questions the representation handles well,
+* where the representation or basic retrieval fails.
 
 ---
 
-# 4. Representation, Storage and Retrieval
+## Phase 1 does NOT mean
 
-These are different concepts:
+Pairs are **not** expected to independently build:
 
-```text
-Representation
-      ↓
-Storage / Index
-      ↓
-Retrieval
+* the complete final RAG application,
+* the common evaluation framework,
+* the common benchmark,
+* the cross-representation comparison engine,
+* every possible retrieval technique,
+* every possible representation × retrieval combination,
+* separate applications,
+* separate datasets,
+* independent evaluation frameworks.
+
+The purpose of Phase 1 is to prove that the assigned representation can be built, queried, and used to return traceable evidence.
+
+---
+
+# 5. Common Pipeline Contract
+
+All four pipelines must eventually expose the same external contract.
+
+Conceptually:
+
+```python
+result = pipeline.run(
+    query=query,
+    top_k=5
+)
 ```
 
-### Representation
-
-How the knowledge is organized.
-
-Examples:
+The common result is:
 
 ```text
-Text
-Text + Metadata
-Structured Data
-Knowledge Graph
+PipelineResult
+├── pipeline_id
+├── representation
+├── retrieval_method
+├── evidence[]
+└── latency_ms
 ```
 
-### Storage / Index
-
-How the representation is persisted or made searchable.
-
-Examples:
+Each evidence item follows the common structure:
 
 ```text
-Text index
-Vector index
-PostgreSQL
-Graph database
+Evidence
+├── content
+├── source_id
+├── score
+└── metadata
 ```
 
-### Retrieval
-
-How relevant information is found.
-
-Examples:
-
-```text
-Keyword
-Dense / Semantic
-Hybrid
-Metadata Filtering
-Reranking
-SQL
-Graph Traversal
-```
-
-A storage technology is not automatically a knowledge representation.
+The internal implementation can be completely different between pairs.
 
 For example:
 
 ```text
-Text Representation
-      ↓
-Vector Index
-      ↓
-Semantic Retrieval
+Text
+→ chunks
+→ embeddings
+→ vector search
+→ Evidence[]
+```
+
+while:
+
+```text
+Structured
+→ relational tables
+→ SQL query
+→ Evidence[]
 ```
 
 and:
 
 ```text
-Structured Representation
-      ↓
-PostgreSQL
-      ↓
-SQL Retrieval
+Graph
+→ nodes + relationships
+→ graph traversal
+→ Evidence[]
 ```
 
 and:
 
 ```text
-Graph Representation
-      ↓
-Graph Store
-      ↓
-Graph Traversal
+Visual
+→ page/document representations
+→ multimodal retrieval
+→ Evidence[]
 ```
+
+The common interface is what allows these different implementations to be integrated.
 
 ---
 
-# 5. Team Structure
+# 6. Phase 1 — Pair-Owned Pipeline
 
-There are four pairs.
+The main Phase 1 output is **retrieved evidence**, not the final LLM answer.
 
-Each pair owns one complete pipeline.
-
-| Pair   | Pipeline            | Folder                  |
-| ------ | ------------------- | ----------------------- |
-| Pair 1 | Text / Chunked Text | `pipelines/text/`       |
-| Pair 2 | Text + Metadata     | `pipelines/metadata/`   |
-| Pair 3 | Structured Data     | `pipelines/structured/` |
-| Pair 4 | Knowledge Graph     | `pipelines/graph/`      |
-
-The exact pair member names are maintained in the project coordination documents.
-
----
-
-# 6. Pair Ownership Model
-
-Each pair owns its assigned pipeline end-to-end.
-
-The expected responsibility is:
+The testing flow is:
 
 ```text
-Understand NovaMart Source
-          ↓
-Design Representation
-          ↓
-Build Representation
-          ↓
-Choose Storage / Index
-          ↓
-Implement Retrieval
-          ↓
-Return Evidence[]
-          ↓
-Test
-          ↓
-Experiment
-          ↓
-Document
-```
-
-Each pair is responsible for:
-
-* Technical research.
-* Representation design.
-* Storage/index design.
-* Retrieval design.
-* Implementation.
-* Testing.
-* Source traceability.
-* Retrieval experiments.
-* Failure analysis.
-* Pipeline documentation.
-* Pull Request preparation.
-
----
-
-# 7. Pipeline Folder Structure
-
-Each pipeline should follow this structure:
-
-```text
-pipelines/<pipeline-name>/
-│
-├── __init__.py
-├── README.md
-├── representation.py
-├── retriever.py
-├── pipeline.py
-├── evaluator.py
-└── tests/
-```
-
-The files have the following responsibilities.
-
-### `representation.py`
-
-Responsible for creating the pipeline's knowledge representation.
-
-### `retriever.py`
-
-Responsible for retrieving relevant information from that representation.
-
-### `pipeline.py`
-
-Responsible for orchestrating the complete pipeline.
-
-Conceptually:
-
-```text
+Source
+   ↓
 Representation
-      ↓
+   ↓
 Storage / Index
-      ↓
-Retriever
-      ↓
-Evidence[]
+   ↓
+Question
+   ↓
+Basic / Native Retrieval
+   ↓
+Top-K Evidence
+   ↓
+Inspect / Test Evidence
 ```
 
-### `evaluator.py`
-
-Contains pipeline-specific evaluation or helper logic needed to understand the pipeline's behavior.
-
-The common project evaluation framework remains under:
+For example:
 
 ```text
-evaluation/
+Question:
+"What is the refund period for a Premium customer in India?"
+        ↓
+Pair's native retrieval
+        ↓
+Top-K Evidence
+        ↓
+Inspect:
+- Was relevant evidence retrieved?
+- Is it traceable?
+- Is the evidence complete?
+- Was the wrong policy version retrieved?
+- Was an exception missed?
 ```
 
-### `README.md`
+The LLM is **not required to prove that the representation works in Phase 1**.
 
-Documents the design, experiments, results and limitations.
+The important question is:
 
-### `tests/`
+> **Can our representation retrieve meaningful, traceable evidence?**
 
-Contains tests for the pipeline.
+The LLM comes downstream:
+
+```text
+Question
+   ↓
+Retrieval
+   ↓
+Evidence[]
+   ↓
+LLM
+   ↓
+Answer
+```
+
+This separation is important because a strong LLM may sometimes produce a plausible answer even when retrieval was incorrect or incomplete.
 
 ---
 
-# 8. Pair 1 — Text / Chunked Text
+# 7. Pair 1 — Text / Chunked Text
 
 ## Ownership
+
+Folder:
 
 ```text
 pipelines/text/
 ```
 
-## Research Question
-
-> **How does a text/chunk-based representation affect the ability to retrieve useful evidence from the NovaMart handbook?**
+Pair 1 owns the plain text representation of the NovaMart handbook.
 
 ## Responsibilities
 
-Pair 1 should:
+The pair should:
 
-1. Understand the NovaMart source.
-2. Extract and clean textual knowledge where appropriate.
-3. Design a meaningful chunking strategy.
-4. Preserve source traceability.
-5. Store/index the resulting text representation.
-6. Implement appropriate basic retrieval.
-7. Return results using `Evidence`.
-8. Test representative questions.
-9. Experiment with relevant chunking/retrieval choices.
-10. Document findings and limitations.
-
-Conceptually:
-
-```text
-NovaMart Handbook
-       ↓
-Text Extraction
-       ↓
-Chunking
-       ↓
-Text Storage / Index
-       ↓
-Retrieval
-       ↓
-Evidence[]
-```
-
-### Important
-
-Do not assume that a fixed chunk size is automatically correct.
-
-The pair should investigate whether chunk boundaries preserve enough context for retrieval.
-
-If a policy is naturally a coherent unit, that should be considered during chunking decisions.
-
----
-
-# 9. Pair 2 — Text + Metadata
-
-## Ownership
-
-```text
-pipelines/metadata/
-```
-
-## Research Question
-
-> **Can explicit metadata help preserve and retrieve contextual constraints that may be difficult to distinguish using text similarity alone?**
-
-Potential metadata supported by the NovaMart source includes:
-
-* Policy area.
-* Customer tier.
-* Region.
-* Product category.
-* Effective dates.
-* Promotion.
-* Seller type.
-* Policy/version information.
-
-Only source-supported metadata should be used.
-
-## Responsibilities
-
-Pair 2 should:
-
-1. Understand the source.
-2. Identify useful source-supported metadata.
-3. Design the text + metadata representation.
-4. Decide how metadata should be stored/indexed.
-5. Build the representation.
-6. Implement appropriate retrieval/filtering.
-7. Return `Evidence`.
-8. Preserve source traceability.
-9. Test representative questions.
-10. Investigate cases where metadata can distinguish similar evidence.
-11. Document limitations.
+1. Read and understand the NovaMart source.
+2. Extract relevant textual knowledge.
+3. Clean and normalize the text where appropriate.
+4. Design a chunking strategy.
+5. Preserve source traceability.
+6. Store/index the resulting text representation.
+7. Implement a basic/native retrieval path.
+8. Convert retrieved results into the common `Evidence` format.
+9. Implement the common `Pipeline` interface.
+10. Test representative questions.
+11. Document important design decisions and limitations.
 
 Conceptually:
 
 ```text
 NovaMart Source
       ↓
-Text
- +
-Metadata
+Text Extraction
       ↓
-Storage / Index
+Cleaning / Normalization
       ↓
-Metadata-aware Retrieval
+Chunking
+      ↓
+Searchable / Indexed Storage
+      ↓
+Basic / Native Retrieval
       ↓
 Evidence[]
+      ↓
+PipelineResult
 ```
 
-### Important distinction
+The pair should investigate reasonable chunking choices rather than assuming one chunk size is automatically correct.
 
-The representation is:
+They may compare a small number of chunking configurations to understand how chunk boundaries affect retrieval.
 
-```text
-Text + Metadata
-```
+## Main research question
 
-Using metadata during query processing is a retrieval behavior.
-
-For example:
-
-```text
-region = India
-customer_tier = Premium
-```
-
-may be used as retrieval constraints.
-
-Do not invent metadata merely to improve retrieval.
+> **How does chunking affect the ability of a text representation to preserve and retrieve useful evidence?**
 
 ---
 
-# 10. Pair 3 — Structured Data
+# 8. Pair 2 — Structured / Relational Data
 
 ## Ownership
+
+Folder:
 
 ```text
 pipelines/structured/
 ```
 
-## Research Question
+Pair 2 owns the structured representation of NovaMart knowledge.
 
-> **Which NovaMart knowledge becomes easier to represent and retrieve when entities, attributes and relationships are explicitly structured?**
+PostgreSQL is the preferred database unless there is a documented technical reason to use another solution.
 
-PostgreSQL is the preferred storage technology unless the pair has a documented technical reason to use another solution.
+## Candidate entities
 
-Potential entities include:
+The pair should investigate entities naturally supported by the actual NovaMart source, such as:
 
-* Customer.
-* Customer Tier.
-* Product.
-* Category.
-* Manufacturer.
-* Seller.
-* Policy.
-* Promotion.
-* Region.
-* Order.
-* Support Case.
+```text
+Customer
+Customer Tier
+Product
+Manufacturer
+Seller
+Policy
+Temporal Version
+```
 
-The final schema must be based on the actual NovaMart source.
+Additional entities may only be created if the source actually provides enough structured information to support them.
+
+## Important restriction
+
+Do not invent orders, support cases, promotions, regions, or other structured records merely because they appear conceptually in the handbook.
+
+The final schema must be based on the actual NovaMart source data.
 
 ## Responsibilities
 
-Pair 3 should:
+The pair should:
 
 1. Identify naturally structured entities.
 2. Identify attributes.
 3. Identify relationships.
-4. Design the schema.
-5. Create the database.
+4. Design the relational schema.
+5. Create database tables.
 6. Load source-supported data.
-7. Preserve source identifiers.
-8. Implement appropriate SQL retrieval.
-9. Return `Evidence`.
-10. Test representative questions.
-11. Investigate multi-table and constraint-heavy questions.
-12. Document design decisions and limitations.
-
-Conceptually:
-
-```text
-NovaMart Source
-      ↓
-Entities + Attributes + Relationships
-      ↓
-Relational Schema
-      ↓
-PostgreSQL
-      ↓
-SQL Retrieval
-      ↓
-Evidence[]
-```
-
-### Important
-
-Do not turn every sentence in the handbook into a database row.
-
-Represent information that naturally benefits from structured storage.
-
-Do not hardcode benchmark answers into SQL queries.
-
----
-
-# 11. Pair 4 — Knowledge Graph
-
-## Ownership
-
-```text
-pipelines/graph/
-```
-
-## Research Question
-
-> **Can explicit relationships and graph traversal improve retrieval for relationship-heavy and multi-hop questions?**
-
-Potential entities include:
-
-* Customer.
-* Customer Tier.
-* Product.
-* Category.
-* Manufacturer.
-* Seller.
-* Policy.
-* Promotion.
-* Region.
-* Order.
-* Support Case.
-* Escalation Level.
-
-Potential relationships include:
-
-```text
-Customer ──HAS_TIER──────> Tier
-
-Customer ──PLACED────────> Order
-
-Order ──CONTAINS─────────> Product
-
-Product ──MANUFACTURED_BY> Manufacturer
-
-Product ──PART_OF────────> Category
-
-Product ──QUALIFIES_FOR──> Promotion
-
-Promotion ──USES─────────> Policy
-
-Policy ──APPLIES_TO──────> Region
-```
-
-These are examples only.
-
-The final graph must contain relationships supported by the NovaMart source.
-
-## Responsibilities
-
-Pair 4 should:
-
-1. Identify entities.
-2. Identify relationships.
-3. Design the graph model.
-4. Choose appropriate graph storage.
-5. Build the graph.
-6. Preserve source identifiers.
-7. Implement graph retrieval/traversal.
-8. Return `Evidence`.
-9. Test one-hop questions.
-10. Test two-hop questions.
-11. Investigate appropriate multi-hop questions.
-12. Document failure cases and limitations.
+7. Preserve stable source identifiers.
+8. Create representative SQL retrieval queries.
+9. Convert retrieved information into `Evidence[]`.
+10. Implement the common `Pipeline` interface.
+11. Test the representation.
+12. Document schema and design decisions.
+13. Document limitations caused by information that is not naturally structured in the source.
 
 Conceptually:
 
@@ -611,26 +505,442 @@ NovaMart Source
       ↓
 Entities + Relationships
       ↓
-Graph Store
+Relational Schema
       ↓
-Graph Retrieval / Traversal
+PostgreSQL
+      ↓
+Basic SQL Retrieval
+      ↓
+Evidence[]
+      ↓
+PipelineResult
+```
+
+## Main research question
+
+> **Which types of NovaMart knowledge become easier to query when represented as structured entities, attributes, and relationships?**
+
+## Important restriction
+
+Do not turn every sentence in the handbook into an arbitrary database row.
+
+The database should contain the knowledge.
+
+Queries should retrieve the knowledge.
+
+Do not hardcode answers directly into SQL queries.
+
+---
+
+# 9. Pair 3 — Knowledge Graph
+
+## Ownership
+
+Folder:
+
+```text
+pipelines/graph/
+```
+
+Pair 3 owns the graph representation of NovaMart knowledge.
+
+## Candidate entities
+
+Examples include:
+
+```text
+Customer
+Customer Tier
+Product
+Category
+Manufacturer
+Seller
+Policy
+Promotion
+Region
+Order
+Support Case
+```
+
+However, the final graph must only contain entities supported by the actual NovaMart source.
+
+## Candidate relationships
+
+Examples:
+
+```text
+Customer ──HAS_TIER──────> Customer Tier
+
+Product ──MANUFACTURED_BY─> Manufacturer
+
+Product ──PART_OF─────────> Category
+
+Product ──QUALIFIES_FOR───> Promotion
+
+Promotion ──USES──────────> Policy
+```
+
+These are examples of relationship types to investigate.
+
+They are **not permission to invent source facts**.
+
+## Responsibilities
+
+The pair should:
+
+1. Identify entities.
+2. Identify source-supported relationships.
+3. Design the graph model.
+4. Choose an appropriate graph storage solution.
+5. Populate the graph.
+6. Preserve source identifiers.
+7. Implement basic/native graph traversal retrieval.
+8. Return retrieved information through `Evidence[]`.
+9. Implement the common `Pipeline` interface.
+10. Test one-hop and two-hop questions.
+11. Test multi-hop questions where the source supports them.
+12. Document the graph design and limitations.
+
+Conceptually:
+
+```text
+NovaMart Source
+      ↓
+Nodes + Relationships
+      ↓
+Graph Storage
+      ↓
+Basic Graph Traversal
+      ↓
+Evidence[]
+      ↓
+PipelineResult
+```
+
+## Main research question
+
+> **Can explicit graph structure preserve relationship-heavy knowledge that may be difficult to retrieve from flat text?**
+
+## Important restriction
+
+Do not invent relationships.
+
+Do not hardcode the answer to a question into the graph or traversal query.
+
+The graph must represent actual knowledge from NovaMart.
+
+---
+
+# 10. Pair 4 — Visual / Multimodal Document Representation
+
+## Ownership
+
+Folder:
+
+```text
+pipelines/visual/
+```
+
+Pair 4 owns the visual/multimodal representation of the NovaMart source document.
+
+The purpose is to investigate cases where the **visual structure of the source document** contains useful information that may be weakened or lost when the document is reduced to plain text.
+
+Examples include:
+
+* tables,
+* page structure,
+* layout,
+* spatial relationships,
+* headings,
+* visually organized policy information,
+* document-level context.
+
+## Responsibilities
+
+The pair should:
+
+1. Understand the original NovaMart document.
+2. Identify information where visual/layout context matters.
+3. Preserve document/page-level visual representation where appropriate.
+4. Choose an appropriate visual/multimodal representation.
+5. Choose appropriate storage/indexing.
+6. Implement a basic/native multimodal retrieval path.
+7. Preserve page/source traceability.
+8. Convert retrieved results into `Evidence[]`.
+9. Implement the common `Pipeline` interface.
+10. Test representative visual/table/layout-sensitive questions.
+11. Document design decisions.
+12. Document limitations.
+
+A technology such as **ColPali** may be investigated as part of this pipeline, but ColPali itself is not the definition of the representation.
+
+Conceptually:
+
+```text
+NovaMart Source Document
+          ↓
+Page / Visual Representation
+          ↓
+Multimodal / Multi-vector Index
+          ↓
+Basic Multimodal Retrieval
+          ↓
+Evidence[]
+          ↓
+PipelineResult
+```
+
+## Main research question
+
+> **Can visual/multimodal representation preserve document information that may be weakened or lost when the source is represented only as text or structured data?**
+
+---
+
+# 11. Metadata Is an Augmentation, Not a Separate Core Representation
+
+Metadata may be used by any appropriate pipeline.
+
+For example:
+
+```text
+Text Chunk
+├── content
+├── policy_id
+├── customer_tier
+├── region
+├── effective_date
+└── source_id
+```
+
+This does **not** create a fifth representation.
+
+Metadata is an augmentation that can help preserve constraints and traceability.
+
+For example:
+
+```text
+Text + Metadata
+```
+
+is still part of the Text pipeline.
+
+Similarly, metadata can exist alongside:
+
+```text
+Structured Data
+Knowledge Graph
+Visual Documents
+```
+
+where supported by the source.
+
+Metadata must always be based on actual NovaMart information.
+
+---
+
+# 12. Retrieval Strategy Ownership
+
+Retrieval is representation-dependent.
+
+The project does **not** require every pair to implement every retrieval technique.
+
+Examples:
+
+| Representation  | Appropriate retrieval examples               |
+| --------------- | -------------------------------------------- |
+| Text            | Keyword, semantic/vector, hybrid, reranking  |
+| Structured      | SQL, filtering, joins, temporal queries      |
+| Knowledge Graph | Entity lookup, graph traversal, Cypher       |
+| Visual          | Multimodal retrieval, multi-vector retrieval |
+
+The important requirement is that each pair can justify its chosen retrieval approach.
+
+The pair should be able to explain:
+
+1. Why this retrieval method fits the representation.
+2. What query types it should handle well.
+3. What query types it may struggle with.
+4. What baseline it is being compared against.
+5. What failure cases were observed.
+6. What evidence supports the design decision.
+
+Advanced retrieval experiments can be added during the shared Phase 2 work.
+
+---
+
+# 13. Common Evidence Contract
+
+All four pairs must return evidence through the same conceptual structure.
+
+```python
+@dataclass
+class Evidence:
+    content: str
+    source_id: str
+    score: float
+    metadata: dict[str, Any]
+```
+
+The purpose is to make the four pipelines interchangeable from the perspective of the rest of the system.
+
+The integration layer should be able to receive:
+
+```text
+PipelineResult
       ↓
 Evidence[]
 ```
 
-### Important
+without needing to know how that evidence was originally stored.
 
-Do not invent relationships simply because they make a query easier.
-
-The graph must represent actual source knowledge.
+Each result should preserve source traceability wherever possible.
 
 ---
 
-# 12. Phase 1 — Pair-Owned Pipeline
+# 14. Common Pipeline Contract
 
-Phase 1 is the implementation phase owned by each pair.
+The common pipeline interface is:
 
-Each pair must make its pipeline usable and queryable:
+```python
+class Pipeline(ABC):
+
+    @abstractmethod
+    def run(
+        self,
+        query: str,
+        top_k: int = 5,
+        filters: dict | None = None,
+    ) -> PipelineResult:
+        pass
+```
+
+The pair's internal implementation may be completely different.
+
+The external boundary remains consistent.
+
+---
+
+# 15. Evaluation Ownership
+
+Evaluation is a **shared responsibility**, not four independent pair projects.
+
+The common evaluation layer lives under:
+
+```text
+evaluation/
+```
+
+The project evaluates retrieval primarily at the evidence level before judging the final LLM answer.
+
+Conceptually:
+
+```text
+Question
+   ↓
+Retrieved Evidence[]
+   ↓
+Retrieval Evaluation
+   ↓
+Evidence Sufficiency
+   ↓
+Common LLM
+   ↓
+Answer
+   ↓
+Answer Evaluation
+```
+
+Possible retrieval metrics include:
+
+* Precision@K
+* Recall@K
+* MRR
+* nDCG@K where applicable
+* Retrieval latency
+
+The evaluation should also examine:
+
+* source traceability,
+* whether required evidence was retrieved,
+* evidence sufficiency,
+* incorrect near-matches,
+* temporal/version mistakes,
+* ignored exceptions,
+* missing multi-hop evidence,
+* irrelevant evidence,
+* representation-specific failure modes.
+
+Pairs may create **local tests** for their own implementation.
+
+They should not create competing evaluation frameworks.
+
+---
+
+# 16. Same Benchmark
+
+All four pipelines use the same NovaMart evaluation questions.
+
+The benchmark is provided under:
+
+```text
+data/queries/
+```
+
+The benchmark should not be changed by individual pairs.
+
+Teams must not create their own independent benchmark as a replacement.
+
+This is important because the final comparison must remain controlled.
+
+The same question should be passed through different pipelines.
+
+For example:
+
+```text
+Question Q001
+      ↓
+Text Pipeline
+      ↓
+Evidence A
+```
+
+```text
+Question Q001
+      ↓
+Structured Pipeline
+      ↓
+Evidence B
+```
+
+```text
+Question Q001
+      ↓
+Graph Pipeline
+      ↓
+Evidence C
+```
+
+```text
+Question Q001
+      ↓
+Visual Pipeline
+      ↓
+Evidence D
+```
+
+The common evaluation layer can then compare the evidence.
+
+**The benchmark is currently frozen.**
+
+Any future benchmark change must be discussed at the project level and, if approved, applied consistently to every pipeline.
+
+---
+
+# 17. Phase 1 vs Phase 2
+
+This distinction is mandatory.
+
+## Phase 1 — Pair-Owned
 
 ```text
 Source
@@ -642,588 +952,227 @@ Storage / Index
 Basic / Native Retrieval
    ↓
 Evidence[]
+   ↓
+PipelineResult
 ```
 
-The purpose of Phase 1 is to establish a reliable baseline for each representation.
+Each pair owns this part.
 
-Phase 1 does **not** require every pair to implement every possible retrieval technique.
+The purpose is to prove:
+
+> **Our representation is correctly built, stored, queryable, and capable of returning traceable evidence.**
 
 ---
 
-# 13. Phase 2 — Shared Experimentation
-
-After the four pipelines are working, the project moves into cross-pipeline experimentation.
-
-The shared experiment layer can evaluate meaningful combinations such as:
+## Phase 2 — Shared
 
 ```text
-Text
-  ×
-Keyword
-
-Text
-  ×
-Dense Retrieval
-
-Text
-  ×
-Hybrid Retrieval
-
-Metadata
-  ×
-Dense + Metadata Filtering
-
-Structured
-  ×
-SQL Retrieval
-
-Graph
-  ×
-Graph Traversal
-```
-
-Potential retrieval techniques across the project include:
-
-* Keyword / BM25.
-* Dense / semantic retrieval.
-* Hybrid retrieval.
-* Metadata filtering.
-* Reranking.
-* SQL / structured retrieval.
-* Graph traversal.
-
-Not every technique must be implemented for every representation.
-
-The project should compare **technically meaningful combinations**, not artificially force the same method onto every pipeline.
-
----
-
-# 14. Common Evidence Contract
-
-All pipelines must ultimately return:
-
-```python
-@dataclass
-class Evidence:
-    content: str
-    source_id: str
-    score: float
-    metadata: dict[str, Any]
-```
-
-The purpose is to make the pipelines compatible with the common integration and evaluation layers.
-
-### `content`
-
-The retrieved information.
-
-### `source_id`
-
-Identifier that allows the evidence to be traced back to the NovaMart source.
-
-### `score`
-
-The retrieval relevance score when the retrieval method provides one.
-
-### `metadata`
-
-Additional source or retrieval information useful for analysis and traceability.
-
-The exact internal representation can differ between pipelines.
-
-The output contract must remain compatible.
-
----
-
-# 15. Evaluation
-
-Evaluation is shared at the project level.
-
-The common evaluation code belongs under:
-
-```text
-evaluation/
-```
-
-Pairs may have pipeline-specific evaluation helpers under their own:
-
-```text
-pipelines/<pipeline>/evaluator.py
-```
-
-but they should not create competing evaluation frameworks.
-
-The evaluation flow is:
-
-```text
-Question
-   ↓
-Expected Evidence / Source IDs
-   ↓
-Pipeline Retrieval
-   ↓
-Retrieved Evidence[]
-   ↓
-Retrieval Evaluation
-   ↓
+Same Query
+      ↓
+Applicable Representation
+      +
+Applicable Retrieval Strategy
+      ↓
+Evidence[]
+      ↓
+Common Evaluation
+      ↓
+Comparison
+      ↓
 Common LLM
-   ↓
+      ↓
 Answer
-   ↓
+      ↓
 Answer Evaluation
 ```
 
-Potential retrieval metrics include:
+The lead/shared layer owns:
 
-* Recall@K.
-* Precision@K.
-* MRR.
-* nDCG@K where appropriate.
-* Retrieval latency.
-* Evidence coverage.
-
-The appropriate metrics depend on the experiment.
+* cross-representation experiments,
+* advanced retrieval experimentation,
+* common evaluation,
+* comparison,
+* common LLM integration,
+* final application integration.
 
 ---
 
-# 16. Development Questions vs Official Benchmark
+# 18. Shared Repository Structure
 
-The official benchmark contains:
-
-```text
-40 evaluation questions
-40 ground-truth entries
-```
-
-These questions are the controlled basis for formal comparison.
-
-However, pairs should not develop only against those questions.
-
-During development, teams may create additional questions to test:
-
-* Edge cases.
-* Unseen questions.
-* Failure cases.
-* Boundary conditions.
-* Representation-specific behavior.
-
-The distinction is:
+The current repository is organized as:
 
 ```text
-Development
-    ↓
-Open-ended experimentation
-    ↓
-Pipeline improvement
-
-Formal Evaluation
-    ↓
-Same 40 benchmark questions
-    ↓
-Fair comparison
+rag-knowledge-representation-playground/
+│
+├── data/
+│   ├── source/
+│   ├── normalized/
+│   └── queries/
+│
+├── shared/
+│   ├── schemas.py
+│   ├── interfaces.py
+│   ├── config.py
+│   └── registry.py
+│
+├── pipelines/
+│   ├── text/
+│   ├── structured/
+│   ├── graph/
+│   └── visual/
+│
+├── evaluation/
+│   ├── retrieval/
+│   ├── answer/
+│   ├── analysis/
+│   └── results/
+│
+├── integration/
+│   ├── runner.py
+│   ├── comparison.py
+│   └── types.py
+│
+├── llm/
+│   ├── adapter.py
+│   └── prompts.py
+│
+├── app/
+│   ├── backend/
+│   └── frontend/
+│
+└── docs/
 ```
-
-The benchmark must not be changed to improve results.
 
 ---
 
-# 17. Failure Analysis
+# 19. Shared Areas vs Pair Ownership
 
-Failures are important experimental results.
+## Shared Areas
 
-Examples include:
-
-```text
-Wrong policy version
-Wrong region
-Wrong customer tier
-Similar but incorrect policy
-Missed exception
-Incomplete relationship
-Irrelevant evidence
-Insufficient evidence
-Poor chunking
-Missing metadata
-Incorrect entity modeling
-Incorrect relationship modeling
-```
-
-Important failures should be documented as:
+These affect the integrated project and require coordination:
 
 ```text
-Query
-  ↓
-Expected Evidence
-  ↓
-Retrieved Evidence
-  ↓
-What went wrong?
-  ↓
-Why did it happen?
-  ↓
-What could improve it?
-```
-
-Do not hide failures.
-
-The project is specifically designed to understand why retrieval succeeds or fails.
-
----
-
-# 18. Common LLM
-
-The final project uses a common LLM layer.
-
-The common LLM belongs to:
-
-```text
-llm/
-```
-
-Individual pairs should not build separate final applications or separate LLM pipelines.
-
-The pair's responsibility ends at:
-
-```text
-Evidence[]
-```
-
-The integrated flow is:
-
-```text
-Pipeline
-   ↓
-Evidence[]
-   ↓
-Common LLM
-   ↓
-Answer
-```
-
-This allows the project to investigate whether different retrieved evidence leads to different answer quality.
-
----
-
-# 19. Integration Ownership
-
-The integration layer belongs to the project lead/shared implementation.
-
-Relevant areas include:
-
-```text
-integration/
-llm/
-evaluation/
-app/
-```
-
-The integration layer will eventually handle:
-
-* Pipeline registration.
-* Running selected pipelines.
-* Running experiments.
-* Passing queries to pipelines.
-* Collecting `Evidence[]`.
-* Common evaluation.
-* Sending evidence to the common LLM.
-* Comparing results.
-* Producing final application output.
-
-Pairs should not create their own competing integration system.
-
----
-
-# 20. Final Application
-
-The final application lives under:
-
-```text
-app/
-```
-
-The application is shared.
-
-The goal is to provide a simple experimentation interface where the same question can be evaluated through different pipelines.
-
-Conceptually:
-
-```text
-User Question
-      ↓
-Run Comparison
-      ↓
-┌───────────────┐
-│ Text          │
-│ Metadata      │
-│ Structured    │
-│ Graph         │
-└───────────────┘
-      ↓
-Evidence Comparison
-      ↓
-Common LLM
-      ↓
-Answer Comparison
-```
-
-The final application should make the retrieved evidence visible rather than showing only the final answer.
-
----
-
-# 21. Shared Areas
-
-The following are shared project areas:
-
-```text
-data/
 shared/
+data/
 evaluation/
 integration/
 llm/
 app/
-docs/
+docs/architecture.md
 ```
 
-Do not modify these areas casually.
-
-In particular, coordinate with the project lead before changing:
+In particular:
 
 ```text
 shared/schemas.py
 shared/interfaces.py
-shared/config.py
-data/
-evaluation/
-integration/
-llm/
-app/
 ```
 
-A change to shared infrastructure can affect every pipeline.
+must not be changed independently by a pair.
 
 ---
 
-# 22. What Each Pair Must NOT Modify
-
-Without discussion with the project lead, pairs must not:
-
-* Modify the NovaMart source.
-* Modify normalized source data.
-* Modify official benchmark questions.
-* Modify ground truth.
-* Change the common Evidence contract.
-* Change shared interfaces.
-* Modify another pair's pipeline.
-* Create a separate application.
-* Create a separate benchmark.
-* Hardcode benchmark answers.
-* Invent source knowledge.
-* Add unnecessary dependencies.
-* Redesign the project architecture.
-
-If a legitimate requirement requires a shared change, raise it with the project lead first.
-
----
-
-# 23. Git Workflow
-
-All team members work from the same GitHub repository.
-
-Do not download a ZIP and work as an isolated project.
-
-Clone the repository:
-
-```bash
-git clone <REPOSITORY_URL>
-cd rag-knowledge-representation-playground
-```
-
-Synchronize with `main`:
-
-```bash
-git checkout main
-git pull origin main
-```
-
-Create a feature branch.
-
-Examples:
-
-```bash
-git checkout -b feature/text-pipeline
-```
-
-```bash
-git checkout -b feature/metadata-pipeline
-```
-
-```bash
-git checkout -b feature/structured-pipeline
-```
-
-```bash
-git checkout -b feature/graph-pipeline
-```
-
-Work inside the assigned pipeline.
-
-Commit focused changes:
-
-```bash
-git add .
-git commit -m "Implement text pipeline"
-```
-
-Push:
-
-```bash
-git push -u origin feature/<your-feature>
-```
-
-Create a Pull Request into:
+## Pair Ownership
 
 ```text
-main
+Pair 1 → pipelines/text/
+
+Pair 2 → pipelines/structured/
+
+Pair 3 → pipelines/graph/
+
+Pair 4 → pipelines/visual/
 ```
+
+Pairs may add supporting tests and documentation within their own pipeline.
 
 ---
 
-# 24. Pull Request Requirements
+# 20. What Teams Must NOT Do
 
-The Pull Request should explain:
+Without discussion with the lead, teams should not:
 
-* What was implemented.
-* Why the representation was chosen.
-* Why the storage/index was chosen.
-* Why the retrieval method was chosen.
-* How evidence is generated.
-* How source traceability works.
-* What was tested.
-* What experiments were performed.
-* What was learned.
-* Known limitations.
-* Representative failure cases.
+* modify `shared/schemas.py`,
+* modify `shared/interfaces.py`,
+* redesign the common `Evidence` contract,
+* modify the benchmark,
+* replace the NovaMart dataset,
+* create a separate dataset,
+* create a separate application,
+* create a separate evaluation framework,
+* modify another pair's pipeline,
+* hardcode answers,
+* invent source knowledge,
+* add unnecessary dependencies,
+* redesign the overall architecture,
+* force a retrieval method that does not naturally fit the representation.
 
-Before requesting review:
+If a team discovers that a shared interface genuinely needs to change, raise the issue before modifying it.
+
+---
+
+# 21. Definition of Done — Phase 1
+
+A pair is considered complete when:
 
 ```text
-[ ] Work is inside assigned pipeline
-[ ] Common dataset unchanged
-[ ] Official benchmark unchanged
-[ ] No hardcoded answers
-[ ] Evidence contract followed
-[ ] Source traceability works
-[ ] Representation documented
-[ ] Storage/index documented
-[ ] Retrieval documented
-[ ] Tests added
+[ ] Source understanding is documented
+[ ] Representation design is documented
+[ ] Representation is implemented
+[ ] Appropriate storage/index is created
+[ ] Source data is loaded correctly
+[ ] Source identifiers are preserved
+[ ] Basic/native retrieval works
+[ ] Common Pipeline interface is respected
+[ ] Retrieval returns common Evidence structure
+[ ] PipelineResult is returned correctly
+[ ] Representative queries have been tested
+[ ] Retrieved evidence has been inspected
+[ ] Failure/limitation cases are documented
+[ ] No unsupported knowledge has been invented
+[ ] Code stays within the team's ownership boundary
+[ ] Technical decisions are documented
 [ ] Tests pass
-[ ] Experiments documented
-[ ] Failure cases documented
-[ ] README updated
-[ ] Dependencies justified
-[ ] No unrelated changes
-[ ] Both pair members understand the implementation
+[ ] Changes are committed to the team's branch
+[ ] Pull Request is ready for integration review
 ```
 
 ---
 
-# 25. Definition of Done
+# 22. Final Project Goal
 
-A pair's Phase 1 work is complete when:
+The final project should demonstrate something more meaningful than:
 
-```text
-Research
-   ↓
-Design
-   ↓
-Representation
-   ↓
-Storage / Index
-   ↓
-Retrieval
-   ↓
-Evidence[]
-   ↓
-Tests
-   ↓
-Experiments
-   ↓
-Failure Analysis
-   ↓
-Documentation
-   ↓
-Pull Request
-   ↓
-Review
-   ↓
-Integration
-```
+> "Here are four different RAG implementations."
 
-Both pair members should be able to answer:
-
-> What did we build?
-
-> Why did we choose this representation?
-
-> Why did we choose this storage/index?
-
-> Why did we choose this retrieval method?
-
-> How is evidence generated?
-
-> How is evidence traced to the source?
-
-> Which questions does it handle well?
-
-> Where does it fail?
-
-> Why does it fail?
-
-> What did we learn?
-
----
-
-# 26. Final Team Principle
-
-We are **not building four unrelated RAG systems**.
-
-We are building one controlled experimentation playground.
-
-The same NovaMart knowledge and the same benchmark questions must pass through different pipelines.
-
-The central comparison is:
+Instead, we want to demonstrate:
 
 ```text
 Knowledge Representation
-          ×
+        ↓
 Retrieval Strategy
-          ↓
+        ↓
 Retrieved Evidence
-          ↓
+        ↓
 Evidence Evaluation
-          ↓
-Common LLM
-          ↓
-Answer
-          ↓
+        ↓
+LLM Answer
+        ↓
 Answer Evaluation
-          ↓
+        ↓
 Comparison
 ```
 
-The goal is not to prove:
+The same question may produce different evidence depending on how the underlying knowledge is represented and how that representation is searched.
 
-> "Our pipeline is the best."
-
-The goal is to discover:
-
-> **Which representation and retrieval approaches work well for which types of questions, where they fail, and why.**
+That difference is the core subject of this project.
 
 ---
 
-# 27. Golden Rule
+# 23. Golden Rule
 
-> **Each pair owns its pipeline from Source → Representation → Storage / Index → Retrieval → Evidence[].**
+> **Each pair owns its representation from Source → Representation → Storage → Basic/Native Retrieval → Evidence[] → PipelineResult.**
 
-> **The project lead/shared layer owns cross-pipeline experimentation, common evaluation, the common LLM, comparison, integration, and the final application.**
+> **Advanced retrieval experimentation, cross-representation comparison, common evaluation, LLM integration, and the final application belong to the shared Phase 2.**
+
+This boundary keeps the project integrated while giving every pair genuine ownership of a technically meaningful component.
